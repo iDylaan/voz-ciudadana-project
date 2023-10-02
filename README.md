@@ -39,7 +39,7 @@ Tarea: JIRA-1234.
 ## Gitmoji
 
 El gitmoji es un apoyo visual referente al tipo de commit que se está realizando, cada tipo viene relacionado con un emoji
-La siguiente URL proporciona los emojis dependiendo del tipo: `https://gitmoji.dev`
+La siguiente URL proporciona los emojis dependiendo del tipo: https://gitmoji.dev
 
 ## Scoope
 
@@ -61,4 +61,4 @@ Si el commit está relacionado con una tarea específica (por ejemplo, en Jira),
 ## Referencia
 
 El estandar de los commits se basó en la guía que se proporciona por *Conventional Commits*
-Para ver mas a detalle el estandar puedes visitar la siguiente URL: `https://www.conventionalcommits.org/en/v1.0.0/`
+Para ver mas a detalle el estandar puedes visitar la siguiente URL: https://www.conventionalcommits.org/en/v1.0.0/
