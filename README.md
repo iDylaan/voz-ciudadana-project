@@ -21,7 +21,7 @@ Cada commit debe seguir el siguiente formato:
 
 Se ha añadido una nueva opción de autenticación utilizando biometría. Esto proporciona una capa adicional de seguridad para los usuarios y mejora la experiencia de usuario al reducir la necesidad de introducir contraseñas.
 
-Relacionado con el ticket JIRA-1234.
+Tarea: JIRA-1234.
 ```
 
 ## Tipos de Commit
