@@ -6,23 +6,23 @@ Para mantener un historial de código limpio y trazable, es esencial seguir un e
 
 Cada commit debe seguir el siguiente formato:
 
-\```
+```
 <opcional: gitmoji> <tipo>(<scoope>): <mensaje corto>
 <opcional: línea en blanco>
 <opcional: descripción detallada>
 <opcional: línea en blanco>
-<referencia al ID de la tarea en Jira>
-\```
+<opcional: referencia al ID de la tarea en Jira>
+```
 
 ### Ejemplo:
 
-\```
+```
 ✨ feat(login): implementa autenticación con biometría
 
 Se ha añadido una nueva opción de autenticación utilizando biometría. Esto proporciona una capa adicional de seguridad para los usuarios y mejora la experiencia de usuario al reducir la necesidad de introducir contraseñas.
 
 Relacionado con el ticket JIRA-1234.
-\```
+```
 
 ## Tipos de Commit
 
