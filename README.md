@@ -1,6 +1,7 @@
 # Guía de Commits para el Proyecto
 
 Para mantener un historial de código limpio y trazable, es esencial seguir un estándar para los mensajes de commit. A continuación, se detallan las pautas para realizar commits en este proyecto.
+** ES IMPORTANTE AVISAR A TODOS QUE SE SUBIERON CAMBIOS, PARA MANTENER ACTUALIZADOS LOS CAMBIOS ANTES DE SUBIR NUEVOS **
 
 ## Formato Estándar de Commit
 
