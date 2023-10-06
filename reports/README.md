@@ -23,7 +23,7 @@ Este proyecto es una API desarrollada con Flask. A continuación, se detallan lo
 
 2. **Creación del entorno virtual**: Navega a la raíz de la carpeta "reports" y crea un entorno virtual con el nombre `vc_venv`:
     ```bash
-    cd path/to/reports
+    cd reports
     virtualenv vc_venv
     ```
 
@@ -44,7 +44,7 @@ Este proyecto es una API desarrollada con Flask. A continuación, se detallan lo
 
 ## Ejecución del servidor
 
-Para iniciar el servidor de Python, ejecuta el siguiente comando:
+Para iniciar el servidor de *Reports API*, ejecuta el siguiente comando:
 
 ```bash
 python .\APP_VZCDNA.py
