@@ -52,6 +52,13 @@ CREATE TABLE REPORT_IMAGES (
 );
 
 
+INSERT INTO REPORT_STATUS (status_name) VALUES
+('pendiente'),
+('activo'),
+('solicionado'),
+('baja');
+
+
 -- REPORTS API USER DB --
 -- Crear el usuario (cambia 'password_secreto' por la contraseña que desees)
 CREATE USER 'REPORTS_API_USER'@'%' IDENTIFIED BY 'password_secreto';
