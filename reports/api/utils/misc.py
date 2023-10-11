@@ -1,4 +1,5 @@
 import bcrypt
+from flask import jsonify
 from cerberus import Validator
 import jwt, datetime, string, random
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt, create_access_token
@@ -40,3 +41,42 @@ def hash_password(password):
 
 def verify_password(password, hashed_password):
     return bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8'))
+
+def handle_error(e):
+    status_message = "ERROR"
+    if isinstance(e, dict):
+        error_message = e.get('description', 'Error desconocido')
+        error_code = e.get('code', 500)
+        error_details = e.get('details', None)
+        if error_code == 404:
+            status_message = "NOT_FOUND"
+        elif error_code == 400:
+            status_message = "BAD_REQUEST"
+        elif error_code == 401:
+            status_message = "UNAUTHORIZED"
+        elif error_code == 403:
+            status_message = "FORBIDDEN"
+        elif error_code == 405:
+            status_message = "METHOD_NOT_ALLOWED"
+        elif error_code == 406:
+            status_message = "NOT_ACCEPTABLE"
+        elif error_code == 408:
+            status_message = "REQUEST_TIMEOUT"
+        elif error_code == 500:
+            status_message = "INTERNAL_SERVER_ERROR"
+        elif error_code == 501:
+            status_message = "NOT_IMPLEMENTED"
+        elif error_code == 502:
+            status_message = "BAD_GATEWAY"
+        elif error_code == 503:
+            status_message = "SERVICE_UNAVAILABLE"
+        elif error_code == 504:
+            status_message = "GATEWAY_TIMEOUT"
+        elif error_code == 505:
+            status_message = "HTTP_VERSION_NOT_SUPPORTED"
+        else:
+            status_message = "ERROR"
+        e_message = f'{error_code} {status_message.capitalize()}: {error_message}'
+        return jsonify(error=str(e_message), status=status_message, error_code=error_code, details = error_details)
+    else:
+        raise Exception('No se recibió un error válido')

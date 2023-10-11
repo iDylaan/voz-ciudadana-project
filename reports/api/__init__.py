@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, jsonify
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 from .api_config import Config

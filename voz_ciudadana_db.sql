@@ -4,6 +4,7 @@ COLLATE utf8mb4_unicode_ci;
 
 USE VOZ_CIUDADANA_DB;
 
+DROP TABLE IF EXISTS USERS;
 CREATE TABLE USERS (
     id INT NOT NULL,
     username VARCHAR(255) NOT NULL,
@@ -14,26 +15,27 @@ CREATE TABLE USERS (
     CONSTRAINT pk_users_id PRIMARY KEY (id)
 );
 
+DROP TABLE IF EXISTS REPORT_STATUS;
 CREATE TABLE REPORT_STATUS (
     id INT NOT NULL AUTO_INCREMENT,
     status_name VARCHAR(255) NOT NULL,
     CONSTRAINT pk_report_status_id PRIMARY KEY (id)
 );
 
+DROP TABLE IF EXISTS REPORT_CATEGORIES;
 CREATE TABLE REPORT_CATEGORIES (
     id INT NOT NULL AUTO_INCREMENT,
     category_name VARCHAR(255) NOT NULL,
     CONSTRAINT pk_report_categories_id PRIMARY KEY (id)
 );
 
+DROP TABLE IF EXISTS REPORTS;
 CREATE TABLE REPORTS (
     id INT NOT NULL AUTO_INCREMENT,
     report_title VARCHAR(255) NOT NULL,
     report_description TEXT NOT NULL,
     creation_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_updated_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    confirmation_request_count INT DEFAULT 0,
-    solved_request_count INT DEFAULT 0,
     user_id INT,
     category_id INT,
     status_id INT,
@@ -43,6 +45,31 @@ CREATE TABLE REPORTS (
     CONSTRAINT fk_reports_status_id FOREIGN KEY (status_id) REFERENCES REPORT_STATUS(id)
 );
 
+DROP TABLE IF EXISTS REPORT_CONFIRMATIONS;
+CREATE TABLE REPORT_CONFIRMATIONS (
+    id INT NOT NULL AUTO_INCREMENT,
+    report_id INT NOT NULL,
+    user_id INT NOT NULL,
+    unconfirmed BOOLEAN NOT NULL DEFAULT FALSE,
+    confirmed_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT pk_report_confirmations_id PRIMARY KEY (id),
+    CONSTRAINT fk_report_confirmations_report_id FOREIGN KEY (report_id) REFERENCES REPORTS(id),
+    CONSTRAINT fk_report_confirmations_user_id FOREIGN KEY (user_id) REFERENCES USERS(id)
+)
+
+DROP TABLE IF EXISTS REPORT_FIXED_CONFIRMATIONS;
+CREATE TABLE REPORT_FIXED_CONFIRMATIONS (
+    id INT NOT NULL AUTO_INCREMENT,
+    report_id INT NOT NULL,
+    user_id INT NOT NULL,
+    unconfirmed BOOLEAN NOT NULL DEFAULT FALSE,
+    confirmed_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT pk_report_fixed_confirmations_id PRIMARY KEY (id),
+    CONSTRAINT fk_report_fixed_confirmations_report_id FOREIGN KEY (report_id) REFERENCES REPORTS(id),
+    CONSTRAINT fk_report_fixed_confirmations_user_id FOREIGN KEY (user_id) REFERENCES USERS(id)
+)
+
+DROP TABLE IF EXISTS REPORT_IMAGES;
 CREATE TABLE REPORT_IMAGES (
     id INT NOT NULL AUTO_INCREMENT,
     image_url VARCHAR(1024) NOT NULL,
@@ -53,15 +80,15 @@ CREATE TABLE REPORT_IMAGES (
 
 
 INSERT INTO REPORT_STATUS (status_name) VALUES
-('pendiente'),
-('activo'),
-('solicionado'),
-('baja');
+('PENDIENTE'),
+('ACTIVO'),
+('SOLICITADO'),
+('DESHABILITADO');
 
 
 -- REPORTS API USER DB --
--- Crear el usuario (cambia 'password_secreto' por la contraseña que desees)
-CREATE USER 'REPORTS_API_USER'@'%' IDENTIFIED BY 'password_secreto';
+-- Creacion el usuario
+CREATE USER 'REPORTS_API_USER'@'%' IDENTIFIED BY 'reports_api_user_pass2023*';
 
 -- Otorgar permisos de SELECT, INSERT y UPDATE para las tablas especificadas
 GRANT SELECT, INSERT, UPDATE ON VOZ_CIUDADANA_DB.REPORTS TO 'REPORTS_API_USER'@'%';
@@ -77,8 +104,8 @@ FLUSH PRIVILEGES;
 
 
 -- AUTH API USER DB --
--- Crear el usuario (cambia 'password_secreto' por la contraseña que desees)
-CREATE USER 'AUTH_API_USER'@'%' IDENTIFIED BY 'password_secreto';
+-- Creacion el usuario
+CREATE USER 'AUTH_API_USER'@'%' IDENTIFIED BY 'auth_api_user_pass2023*';
 
 -- Otorgar permisos de SELECT, INSERT y UPDATE para la tabla USERS
 GRANT SELECT, INSERT, UPDATE ON VOZ_CIUDADANA_DB.USERS TO 'AUTH_API_USER'@'%';
