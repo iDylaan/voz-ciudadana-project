@@ -228,3 +228,32 @@ def delete_report(id_report):
             return handle_error({'description': e[e.find(':')+2:], 'code': int(e[:3])}), int(e[:3])
         except Exception as e:
             return handle_error({'description': "Error inesperado en el servidor", 'code': 500}), 500
+        
+        
+@mod.route('/reports/delete_image/<int:id_image>', methods=['PUT'])
+def delete_report_image(id_image):
+    try:
+        result = query(SQL_STRINGS.GET_REPORT_IMAGE_BY_ID, {'id_image': id_image}, True)
+        
+        if result["status"] == "NOT_FOUND":
+            return handle_error({'description': 'No hay resultados de reportes','code': 404}), 404
+        elif result["status"] != "OK":
+            return handle_error({'description': 'No se pudo obtener los resultados de reportes','code': 500}), 500
+        
+        reports_dict = [dict(row) for row in result["data"]]
+        for report in reports_dict:
+            if report["images"] is not None:
+                report["images"] = report["images"].split(",")
+            else:
+                report["images"] = []
+        return jsonify({
+            'status': result["status"],
+            'data': reports_dict
+        }), 200
+    except Exception as e:
+        print("Ha ocurrido un error en @delete_report_image/: {} en la linea {}".format(e, e.__traceback__.tb_lineno))
+        try:
+            e = str(e)
+            return handle_error({'description': e[e.find(':')+2:], 'code': int(e[:3])}), int(e[:3])
+        except Exception as e:
+            return handle_error({'description': "Error inesperado en el servidor", 'code': 500}), 500

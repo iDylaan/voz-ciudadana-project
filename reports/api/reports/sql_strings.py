@@ -56,3 +56,7 @@ class Sql_Strings():
         "UPDATE reports SET "
         "status_id = 4"
     )
+    
+    GET_REPORT_IMAGE_BY_ID = (
+        "SELECT * FROM report_images WHERE id = %(image)s"
+    )
