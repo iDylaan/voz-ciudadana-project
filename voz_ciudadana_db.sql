@@ -74,6 +74,7 @@ CREATE TABLE REPORT_IMAGES (
     id INT NOT NULL AUTO_INCREMENT,
     image_url VARCHAR(1024) NOT NULL,
     report_id INT,
+    is_active BOOLEAN DEFAULT TRUE,
     CONSTRAINT pk_report_images_id PRIMARY KEY (id),
     CONSTRAINT fk_report_images_report_id FOREIGN KEY (report_id) REFERENCES REPORTS(id)
 );
