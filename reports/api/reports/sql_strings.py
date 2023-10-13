@@ -1,11 +1,20 @@
 class Sql_Strings():
     GET_REPORTS = (
-        "SELECT * FROM reports"
+        "SELECT "
+        "r.*, "
+        "GROUP_CONCAT(ri.image_url) AS images "
+        "FROM reports r "
+        "LEFT JOIN report_images ri ON r.id = ri.report_id "
+        "GROUP BY r.id"
     )
     
     GET_REPORT_BY_ID = (
-        "SELECT * FROM reports "
-        "WHERE id = %(id_report)s"
+        "SELECT r.*, "
+        "GROUP_CONCAT(ri.image_url) AS images "
+        "FROM reports r "
+        "LEFT JOIN report_images ri ON r.id = ri.report_id "
+        "WHERE r.id = %(id_report)s "
+        "GROUP BY r.id"
     )
     
     INSERT_REPORT = (
@@ -29,12 +38,21 @@ class Sql_Strings():
         ")" 
     )
     
-    GET_REPORT_BY_ID = (
-        "SELECT * FROM reports "
-        "WHERE id = %(id_report)s "
-    ) 
-    
     INSERT_REPORT_IMAGES = (
         "INSERT INTO report_images (image_url, report_id) "
         "VALUES {}"
+    )
+    
+    UPDATE_REPORT = (
+        "UPDATE reports SET "
+        "report_title = %(report_title)s, "
+        "report_description = %(report_description)s, "
+        "category_id = %(category_id)s "
+        "WHERE id = %(id_report)s"
+    )
+    
+    
+    LOGIC_DELETE_REPORT = (
+        "UPDATE reports SET "
+        "status_id = 4"
     )

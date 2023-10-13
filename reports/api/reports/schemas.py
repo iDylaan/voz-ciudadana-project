@@ -32,3 +32,18 @@ report_schema = {
         "required": False
     }
 }
+
+report_update_schema = {
+    "title": {
+        "type": "string",
+        "required": True
+    },
+    "description": {
+        "type": "string",
+        "required": True
+    },
+    "category_id": {
+        "type": "integer",
+        "required": True
+    }
+}
