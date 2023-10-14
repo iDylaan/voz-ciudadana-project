@@ -36,6 +36,7 @@ CREATE TABLE REPORTS (
     report_description TEXT NOT NULL,
     creation_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_updated_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    coords VARCHAR(255) NOT NULL,
     user_id INT,
     category_id INT,
     status_id INT,
