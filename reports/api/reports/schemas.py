@@ -47,3 +47,17 @@ report_update_schema = {
         "required": True
     }
 }
+
+url_image_schema = {
+    "url_image": {
+        "type": "string",
+        'regex': r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+    }
+}
+
+id_user_schema = {
+    "id_user": {
+        "type": "integer",
+        "required": True
+    }
+}

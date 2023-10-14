@@ -5,7 +5,7 @@ from api.utils.misc import val_req_data, handle_error
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_cors import CORS
 from api.config.conf_mysql import query, sql
-from .schemas import report_schema, report_update_schema
+from .schemas import report_schema, report_update_schema, url_image_schema, id_user_schema
 
 mod = Blueprint('reports', __name__)
 # CORS acces to "reports"
@@ -230,28 +230,205 @@ def delete_report(id_report):
             return handle_error({'description': "Error inesperado en el servidor", 'code': 500}), 500
         
         
-@mod.route('/reports/delete_image/<int:id_image>', methods=['PUT'])
+@mod.route('/reports/delete_image/<int:id_image>', methods=['DELETE'])
 def delete_report_image(id_image):
     try:
         result = query(SQL_STRINGS.GET_REPORT_IMAGE_BY_ID, {'id_image': id_image}, True)
         
         if result["status"] == "NOT_FOUND":
-            return handle_error({'description': 'No hay resultados de reportes','code': 404}), 404
+            return handle_error({'description': 'No se encontró la imagen con id {}'.format(id_image),'code': 404}), 404
         elif result["status"] != "OK":
-            return handle_error({'description': 'No se pudo obtener los resultados de reportes','code': 500}), 500
+            return handle_error({'description': 'No se pudo obtener la imagen a eliminar','code': 500}), 500
         
-        reports_dict = [dict(row) for row in result["data"]]
-        for report in reports_dict:
-            if report["images"] is not None:
-                report["images"] = report["images"].split(",")
-            else:
-                report["images"] = []
+        response = sql(SQL_STRINGS.LOGIC_DELETE_REPORT_IMAGE, {"id_image": id_image})
+        if (response["status"] != "OK"):
+            return handle_error({'description': 'Error inesperado al eliminar la imagen', 'code': 500}), 500
+        result["data"]["is_active"] = 0
         return jsonify({
-            'status': result["status"],
-            'data': reports_dict
+            'status': response["status"],
+            'data': {"message": "Se eliminó correctamente la imagen", "report_image_details": result["data"]}
         }), 200
     except Exception as e:
         print("Ha ocurrido un error en @delete_report_image/: {} en la linea {}".format(e, e.__traceback__.tb_lineno))
+        try:
+            e = str(e)
+            return handle_error({'description': e[e.find(':')+2:], 'code': int(e[:3])}), int(e[:3])
+        except Exception as e:
+            return handle_error({'description': "Error inesperado en el servidor", 'code': 500}), 500
+        
+        
+        
+@mod.route('/reports/add_image/<int:id_report>', methods=['POST'])
+def add_report_image(id_report):
+    try:
+        result = query(SQL_STRINGS.GET_REPORT_BY_ID, {'id_report': id_report}, True)
+        if result["status"] == "NOT_FOUND":
+            return handle_error({'description': 'No se encontró el reporte con id {}'.format(id_report),'code': 404}), 404
+        elif result["status"] != "OK":
+            return handle_error({'description': 'No se pudo obtener el reporte','code': 500}), 500
+        
+        data = request.get_json()
+        report_url_image = data.get('url_image', None)
+        if report_url_image is None:
+            return handle_error({'description': 'Error en la validación de la petición','code': 400, 'details': {'missing_data': ['url_image']}}), 400
+
+        errors = val_req_data({"url_image": report_url_image}, url_image_schema)
+        if errors:
+            return handle_error({'description': 'Error en la validación de la petición','code': 400, 'details': errors}), 400
+        
+        response = sql(SQL_STRINGS.INSERT_REPORT_IMAGE, {"id_report": id_report, "url_image": report_url_image})
+        if (response["status"] != "OK"):
+            return handle_error({'description': 'Error inesperado al eliminar la imagen', 'code': 500}), 500
+        
+        result = query(SQL_STRINGS.GET_IMAGE_BY_ID, {'id_image': response["last_insert_id"]}, True)
+        
+        return jsonify({
+            'status': response["status"],
+            'data': {"message": "Se agregó correctamente la imagen", "report_image_details": result["data"]}
+        }), 200
+    except Exception as e:
+        print("Ha ocurrido un error en @add_report_image/: {} en la linea {}".format(e, e.__traceback__.tb_lineno))
+        try:
+            e = str(e)
+            return handle_error({'description': e[e.find(':')+2:], 'code': int(e[:3])}), int(e[:3])
+        except Exception as e:
+            return handle_error({'description': "Error inesperado en el servidor", 'code': 500}), 500
+        
+
+@mod.route('/reports/toggle_confirm/<int:id_report>', methods=['POST'])
+def toggle_confirm(id_report):
+    try:
+        data = request.get_json()
+        id_user = data.get('id_user', None)
+        if id_user is None:
+            return handle_error({'description': 'Error en la validación de la petición','code': 400, 'details': {'missing_data': ['id_user']}}), 400
+        errors = val_req_data({"id_user": id_user}, id_user_schema)
+        if errors:
+            return handle_error({'description': 'Error en la validación de la petición','code': 400, 'details': errors}), 400
+        
+        report_result = query(SQL_STRINGS.GET_REPORT_BY_ID, {'id_report': id_report}, True)
+        if report_result["status"] == "NOT_FOUND":
+            return handle_error({'description': 'No se encontró el reporte con id {}'.format(id_report),'code': 404}), 404
+        elif report_result["status"] != "OK":
+            return handle_error({'description': 'No se pudo obtener el reporte','code': 500}), 500
+        
+        user_result = query(SQL_STRINGS.GET_USER_BY_ID, {'id_user': id_user}, True)
+        if user_result["status"] == "NOT_FOUND":
+            return handle_error({'description': 'No se encontró al usuario con id {}'.format(id_user),'code': 404}), 404
+        elif user_result["status"] != "OK":
+            return handle_error({'description': 'No se pudo consultar al usuario','code': 500}), 500
+
+        # Obtener si ya existe el registro de la confirmación
+        id_user = int(id_user)
+        confirmation_result = query(SQL_STRINGS.GET_CONFIRMATION_BY_REPORT_AND_USER, {"id_report": id_report, "id_user": id_user}, True)
+        confirmation_exists = None
+        if confirmation_result["status"] == "NOT_FOUND":
+            confirmation_exists = False
+            confirmation_result["data"] = {"unconfirmed": 0}
+        elif confirmation_result["status"] == "OK":
+            confirmation_exists = True
+            
+        user_result["data"]["unconfirmed"] = int(confirmation_result["data"]["unconfirmed"])
+        if confirmation_exists:
+            if bool(user_result["data"]["unconfirmed"]):
+                response = sql(SQL_STRINGS.SET_CONFIRM_REPORT, {"id_report": id_report, "id_user": id_user})
+                if (response["status"] != "OK"):
+                    return handle_error({'description': 'Error inesperado al registrar la confirmación', 'code': 500}), 500
+                user_result["data"]["unconfirmed"] = 0 if bool(user_result["data"]["unconfirmed"]) else 1
+                return jsonify({
+                    'status': response["status"],
+                    'data': {"message": "Se confirmó el reporte correctamente", "report_confirmation_details": user_result["data"]}
+                }), 200
+            else:
+                response = sql(SQL_STRINGS.UNCONFIRM_REPORT, {"id_report": id_report, "id_user": id_user})
+                if (response["status"] != "OK"):
+                    return handle_error({'description': 'Error inesperado al registrar la desconfirmación', 'code': 500}), 500
+                user_result["data"]["unconfirmed"] = 0 if bool(user_result["data"]["unconfirmed"]) else 1
+                return jsonify({
+                    'status': response["status"],
+                    'data': {"message": "Se desconfirmó el reporte correctamente", "report_confirmation_details": user_result["data"]}
+                }), 200
+        else:
+            response = sql(SQL_STRINGS.CONFIRM_REPORT, {"id_report": id_report, "id_user": id_user})
+            if (response["status"] != "OK"):
+                return handle_error({'description': 'Error inesperado al registrar la confirmación', 'code': 500}), 500
+            return jsonify({
+                'status': response["status"],
+                'data': {"message": "Se confirmó el reporte correctamente", "report_confirmation_details": user_result["data"]}
+            }), 200
+    except Exception as e:
+        print("Ha ocurrido un error en @toggle_confirm/: {} en la linea {}".format(e, e.__traceback__.tb_lineno))
+        try:
+            e = str(e)
+            return handle_error({'description': e[e.find(':')+2:], 'code': int(e[:3])}), int(e[:3])
+        except Exception as e:
+            return handle_error({'description': "Error inesperado en el servidor", 'code': 500}), 500
+
+
+
+@mod.route('/reports/toggle_fix_confirm/<int:id_report>', methods=['POST'])
+def toggle_fix_confirm(id_report):
+    try:
+        data = request.get_json()
+        id_user = data.get('id_user', None)
+        if id_user is None:
+            return handle_error({'description': 'Error en la validación de la petición','code': 400, 'details': {'missing_data': ['id_user']}}), 400
+        errors = val_req_data({"id_user": id_user}, id_user_schema)
+        if errors:
+            return handle_error({'description': 'Error en la validación de la petición','code': 400, 'details': errors}), 400
+        
+        report_result = query(SQL_STRINGS.GET_REPORT_BY_ID, {'id_report': id_report}, True)
+        if report_result["status"] == "NOT_FOUND":
+            return handle_error({'description': 'No se encontró el reporte con id {}'.format(id_report),'code': 404}), 404
+        elif report_result["status"] != "OK":
+            return handle_error({'description': 'No se pudo obtener el reporte','code': 500}), 500
+        
+        user_result = query(SQL_STRINGS.GET_USER_BY_ID, {'id_user': id_user}, True)
+        if user_result["status"] == "NOT_FOUND":
+            return handle_error({'description': 'No se encontró al usuario con id {}'.format(id_user),'code': 404}), 404
+        elif user_result["status"] != "OK":
+            return handle_error({'description': 'No se pudo consultar al usuario','code': 500}), 500
+
+        # Obtener si ya existe el registro de la confirmación
+        id_user = int(id_user)
+        confirmation_result = query(SQL_STRINGS.GET_FIXED_CONFIRMATION_BY_REPORT_AND_USER, {"id_report": id_report, "id_user": id_user}, True)
+        confirmation_exists = None
+        if confirmation_result["status"] == "NOT_FOUND":
+            confirmation_exists = False
+            confirmation_result["data"] = {"unconfirmed": 0}
+        elif confirmation_result["status"] == "OK":
+            confirmation_exists = True
+            
+        user_result["data"]["unconfirmed"] = int(confirmation_result["data"]["unconfirmed"])
+        if confirmation_exists:
+            if bool(user_result["data"]["unconfirmed"]):
+                response = sql(SQL_STRINGS.SET_FIXED_CONFIRM_REPORT, {"id_report": id_report, "id_user": id_user})
+                if (response["status"] != "OK"):
+                    return handle_error({'description': 'Error inesperado al registrar la confirmación de atendimiento', 'code': 500}), 500
+                user_result["data"]["unconfirmed"] = 0 if bool(user_result["data"]["unconfirmed"]) else 1
+                return jsonify({
+                    'status': response["status"],
+                    'data': {"message": "Se confirmó el atendimiento el reporte correctamente", "report_confirmation_details": user_result["data"]}
+                }), 200
+            else:
+                response = sql(SQL_STRINGS.FIXED_UNCONFIRM_REPORT, {"id_report": id_report, "id_user": id_user})
+                if (response["status"] != "OK"):
+                    return handle_error({'description': 'Error inesperado al registrar la desconfirmación', 'code': 500}), 500
+                user_result["data"]["unconfirmed"] = 0 if bool(user_result["data"]["unconfirmed"]) else 1
+                return jsonify({
+                    'status': response["status"],
+                    'data': {"message": "Se desconfirmó el atendimiento el reporte correctamente", "report_confirmation_details": user_result["data"]}
+                }), 200
+        else:
+            response = sql(SQL_STRINGS.FIXED_CONFIRM_REPORT, {"id_report": id_report, "id_user": id_user})
+            if (response["status"] != "OK"):
+                return handle_error({'description': 'Error inesperado al registrar la confirmación', 'code': 500}), 500
+            return jsonify({
+                'status': response["status"],
+                'data': {"message": "Se confirmó el atendimiento el reporte correctamente", "report_confirmation_details": user_result["data"]}
+            }), 200
+    except Exception as e:
+        print("Ha ocurrido un error en @toggle_fix_confirm/: {} en la linea {}".format(e, e.__traceback__.tb_lineno))
         try:
             e = str(e)
             return handle_error({'description': e[e.find(':')+2:], 'code': int(e[:3])}), int(e[:3])
