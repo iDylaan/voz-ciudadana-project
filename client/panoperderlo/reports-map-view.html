@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIRECI</title>
+    <link rel="stylesheet" href="../assets/css/reports-map-view.css">
+    <script>
+        (g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })({
+            key: "AIzaSyAXnAAtV9TCNDfvl9tMx3iwCJC8MCECMCQ",
+            v: "weekly",
+        });
+    </script>
+    <script src="../assets/js/api/googlemaps/GoogleMapsAPI.js" async defer></script>
+</head>
+
+<body>
+    <main>
+        <div class="title__contianer">
+            <h1>Sistema de Reportes Ciudadanos</h1>
+            <p>SIRECI</p>
+        </div>
+        <div class="map__container">
+            <div id="map-loader">
+                <div class="sk-cube-grid">
+                    <div class="sk-cube sk-cube1"></div>
+                    <div class="sk-cube sk-cube2"></div>
+                    <div class="sk-cube sk-cube3"></div>
+                    <div class="sk-cube sk-cube4"></div>
+                    <div class="sk-cube sk-cube5"></div>
+                    <div class="sk-cube sk-cube6"></div>
+                    <div class="sk-cube sk-cube7"></div>
+                    <div class="sk-cube sk-cube8"></div>
+                    <div class="sk-cube sk-cube9"></div>
+                </div>
+            </div>
+
+            <div id="map"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p>By Last In First Out (LIFO)</p>
+        <p>LIFO 2023©</p>
+    </footer>
+</body>
+
+</html>

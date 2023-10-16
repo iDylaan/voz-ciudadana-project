@@ -80,3 +80,11 @@ def handle_error(e):
         return jsonify(error=str(e_message), status=status_message, error_code=error_code, details = error_details)
     else:
         raise Exception('No se recibió un error válido')
+    
+    
+def get_dict_coords(string_coords): 
+    coords_array = string_coords.split(', ')
+    coords_dict = {}
+    coords_dict['lat'] = coords_array[0][4:]
+    coords_dict['lng'] = coords_array[1][4:]
+    return coords_dict

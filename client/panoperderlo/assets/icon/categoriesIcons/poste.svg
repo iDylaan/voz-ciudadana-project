@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:svgjs="http://svgjs.com/svgjs" width="512" height="512" x="0" y="0" viewBox="0 0 512 512"
+    style="enable-background:new 0 0 512 512" xml:space="preserve" class="">
+    <g>
+        <path fill="#fed843" d="m81.038 144.91 20.1-22.291 131.475 118.556-20.101 22.291z" data-original="#fed843">
+        </path>
+        <path fill="#fabe2c" d="M279.685 241.09 411.16 122.534l20.1 22.29-131.473 118.557z" data-original="#fabe2c">
+        </path>
+        <path fill="#47568c" d="M207.42 0h97.16v512h-97.16z" data-original="#47568c"></path>
+        <path fill="#29376d"
+            d="M256 0h48.58v512H256zM402.371 33.5c-16.58 0-30.021 13.441-30.021 30.021V93h60.042V63.521c0-16.58-13.441-30.021-30.021-30.021z"
+            data-original="#29376d"></path>
+        <path fill="#47568c"
+            d="M109.629 33.5c-16.58 0-30.021 13.441-30.021 30.021V93h60.042V63.521c-.001-16.58-13.441-30.021-30.021-30.021z"
+            data-original="#47568c"></path>
+        <path fill="#29376d" d="M207.42 441h97.16v71h-97.16z" data-original="#29376d"></path>
+        <path fill="#d3dcea" d="M50.5 78h411v72.72h-411z" data-original="#d3dcea"></path>
+        <path fill="#132354" d="M256 441h48.58v71H256z" data-original="#132354"></path>
+        <path fill="#b8c4d8" d="M256 78h205.5v72.72H256z" data-original="#b8c4d8"></path>
+    </g>
+</svg>

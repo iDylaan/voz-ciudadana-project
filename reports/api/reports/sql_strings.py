@@ -2,20 +2,34 @@ class Sql_Strings():
     GET_REPORTS = (
         "SELECT "
         "r.*, "
+        "rc.category_name, "
+        "rs.status_name, "
+        "u.username, "
         "GROUP_CONCAT(ri.image_url) AS images "
         "FROM reports r "
-        "LEFT JOIN report_images ri ON r.id = ri.report_id "
-        "WHERE ri.is_active = 1 "
+        "LEFT JOIN report_images ri ON r.id = ri.report_id AND ri.is_active = 1 "
+        "LEFT JOIN report_categories rc ON r.category_id = rc.id "
+        "LEFT JOIN report_status rs ON r.status_id = rs.id "
+        "LEFT JOIN users u ON r.user_id = u.id "
+        "WHERE r.status_id IN (1, 2) "
+        "AND u.is_active = 1 "
         "GROUP BY r.id"
     )
     
     GET_REPORT_BY_ID = (
         "SELECT r.*, "
+        "rc.category_name, "
+        "rs.status_name, "
+        "u.username, "
         "GROUP_CONCAT(ri.image_url) AS images "
         "FROM reports r "
-        "LEFT JOIN report_images ri ON r.id = ri.report_id "
+        "LEFT JOIN report_images ri ON r.id = ri.report_id AND ri.is_active = 1 "
+        "LEFT JOIN report_categories rc ON r.category_id = rc.id "
+        "LEFT JOIN report_status rs ON r.status_id = rs.id "
+        "LEFT JOIN users u ON r.user_id = u.id "
         "WHERE r.id = %(id_report)s "
-        "AND ri.is_active = 1 "
+        "AND r.status_id IN (1, 2) "
+        "AND u.is_active = 1 "
         "GROUP BY r.id"
     )
     
@@ -28,7 +42,8 @@ class Sql_Strings():
             "category_id, "
             "status_id, "
             "last_updated_dt, "
-            "creation_dt "
+            "creation_dt, "
+            "coords "
         ") VALUES "
         "("
             "%(report_title)s, "
@@ -36,12 +51,13 @@ class Sql_Strings():
             "%(user_id)s, "
             "%(category_id)s, "
             "%(status_id)s, "
-            "CURRENT_TIMESTAMP, CURRENT_TIMESTAMP"
+            "CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, "
+            "%(coords)s"
         ")" 
     )
     
     INSERT_REPORT_IMAGES = (
-        "INSERT INTO report_images (image_url, report_id) "
+        "INSERT INTO report_images (image_url, report_id, is_active) "
         "VALUES {}"
     )
     

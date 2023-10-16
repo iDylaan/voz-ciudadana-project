@@ -1,7 +1,7 @@
 import datetime
 from flask import Blueprint, jsonify, request
 from .sql_strings import Sql_Strings as SQL_STRINGS
-from api.utils.misc import val_req_data, handle_error
+from api.utils.misc import val_req_data, handle_error, get_dict_coords
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_cors import CORS
 from api.config.conf_mysql import query, sql
@@ -31,14 +31,35 @@ def get_reports():
             return handle_error({'description': 'No se pudo obtener los resultados de reportes','code': 500}), 500
         
         reports_dict = [dict(row) for row in result["data"]]
+        result_reports = []
         for report in reports_dict:
+            result_report = {}
+            result_report["id"] = report["id"]
+            result_report["title"] = report["report_title"]
+            result_report["description"] = report["report_description"]
+            result_report["category"] = {
+                "id": report["category_id"],
+                "category_name": report["category_name"]
+            }
+            result_report["status"] = {
+                "id": report["status_id"],
+                "status_name": report["status_name"]
+            }
+            result_report["created_at"] = report["creation_dt"]
+            result_report["last_update"] = report["last_updated_dt"]
+            result_report["user"] = {
+                "id": report["user_id"],
+                "username": report["username"]
+            } 
+            result_report["coords"] = get_dict_coords(report["coords"])
             if report["images"] is not None:
-                report["images"] = report["images"].split(",")
+                result_report["images"] = report["images"].split(",")
             else:
-                report["images"] = []
+                result_report["images"] = []
+            result_reports.append(result_report)
         return jsonify({
             'status': result["status"],
-            'data': reports_dict
+            'data': result_reports
         }), 200
     except Exception as e:
         print("Ha ocurrido un error en @get_reports/: {} en la linea {}".format(e, e.__traceback__.tb_lineno))
@@ -58,13 +79,33 @@ def get_report(id_report):
             return handle_error({'description': 'No se encontró el reporte con id {}'.format(id_report),'code': 404}), 404
         elif result["status"] != "OK":
             return handle_error({'description': 'No se pudo obtener el reporte','code': 500}), 500
+        
+        result_report = {}
+        result_report["id"] =result["data"]["id"]
+        result_report["title"] =result["data"]["report_title"]
+        result_report["description"] =result["data"]["report_description"]
+        result_report["category"] = {
+            "id":result["data"]["category_id"],
+            "category_name":result["data"]["category_name"]
+        }
+        result_report["status"] = {
+            "id":result["data"]["status_id"],
+            "status_name":result["data"]["status_name"]
+        }
+        result_report["created_at"] =result["data"]["creation_dt"]
+        result_report["last_update"] =result["data"]["last_updated_dt"]
+        result_report["user"] = {
+            "id":result["data"]["user_id"],
+            "username":result["data"]["username"]
+        } 
+        result_report["coords"] = get_dict_coords(result["data"]["coords"])
         if result["data"]["images"] is not None:
-            result["data"]["images"] = result["data"]["images"].split(",")
+            result_report["images"] = result["data"]["images"].split(",")
         else:
-            result["data"]["images"] = []
+            result_report["images"] = []
         return jsonify({
             'status': result["status"],
-            'data': result["data"]
+            'data': result_report
         }), 200
     except Exception as e:
         print("Ha ocurrido un error en @get_report/: {} en la linea {}".format(e, e.__traceback__.tb_lineno))
@@ -85,9 +126,11 @@ def create_report():
         title = data.get("title", None)
         description = data.get("description", None)
         user_id = data.get("user_id", None)
-        category_id = data.get("category_id", None)
+        category_id = data.get("category_id", None),
+        coords = data.get("coords", None)
         if not title \
         or not user_id \
+        or not coords \
         or not category_id:
             missing_data = []
             if title is None:
@@ -96,15 +139,18 @@ def create_report():
                 missing_data.append({"user_id": "ID del usuario que realiza el reporte"})
             if category_id is None:
                 missing_data.append({"category_id": "ID de la categoria del reporte"})
+            if coords is None:
+                missing_data.append({"coords": "Faltan las coordenadas del reporte"})
             return handle_error({'description': 'Error inesperado en el servidor','code': 400, 'details': {'missing_data': missing_data}}), 400
         
         new_report = {
             "title": title,
             "description": description,
             "user_id": int(user_id),
-            "category_id": int(category_id),
+            "category_id": int(category_id[0]),
             "status_id": 1,
-            "images": []
+            "images": [],
+            "coords": coords
         }
         images = data.get("images", None)
         if images is not None:
@@ -114,28 +160,30 @@ def create_report():
         errors = val_req_data(new_report, report_schema)
         if errors:
             return handle_error({'description': 'Error en la validación de la petición','code': 400, 'details': errors}), 400
-        
+        new_report['coords'] = 'lat:{}, lng:{}'.format(new_report['coords']['lat'], new_report['coords']['lng'])
         result = sql(SQL_STRINGS.INSERT_REPORT, {
             "report_title": new_report['title'],
             "report_description": new_report['description'],
             "user_id": new_report['user_id'],
             "category_id": new_report['category_id'],
-            "status_id": new_report['status_id']
+            "status_id": new_report['status_id'],
+            "coords": new_report['coords'],
         })
         if (result["status"] != "OK"):
             return handle_error({'description': 'Error inesperado en el registro del reporte', 'code': 500}), 500
         
         values_insrt = ''
         for index, image in enumerate(new_report['images']):
-            values_insrt += '(\'{}\', {}), '.format(image, result['last_insert_id']) \
+            values_insrt += '(\'{}\', {}, 1), '.format(image, result['last_insert_id']) \
                 if index < len(new_report['images']) - 1 \
-                else '(\'{}\', {})'.format(image, result['last_insert_id'])
+                else '(\'{}\', {}, 1)'.format(image, result['last_insert_id'])
         new_report['id'] = result['last_insert_id']
         
         result = sql(SQL_STRINGS.INSERT_REPORT_IMAGES.format(values_insrt))
         if (result["status"] != "OK"):
             return handle_error({'description': 'Error inesperado en el registro de las imagenes del reporte', 'code': 500}), 500
         
+        new_report['coords'] = get_dict_coords(new_report['coords'])
         return jsonify({"status": 'OK', "data": new_report}), 200
     except Exception as e:
         print("Ha ocurrido un error en @create_report/: {} en la linea {}".format(e, e.__traceback__.tb_lineno))

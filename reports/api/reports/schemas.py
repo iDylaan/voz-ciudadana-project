@@ -30,6 +30,14 @@ report_schema = {
     "updated_at": {
         "type": "datetime",
         "required": False
+    },
+    "coords": {
+        "type": "dict",
+        "schema": {
+            "lat": {"type": "float", "required": True},  # Rango de latitudes válidas
+            "lng": {"type": "float", "required": True}  # Rango de longitudes válidas
+        },
+        "required": True
     }
 }
 
