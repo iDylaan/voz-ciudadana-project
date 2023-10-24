@@ -4,16 +4,49 @@ COLLATE utf8mb4_unicode_ci;
 
 USE VOZ_CIUDADANA_DB;
 
+DROP TABLE IF EXISTS PERSONAL_ACCESS_TOKENS;
+CREATE TABLE PERSONAL_ACCESS_TOKENS (
+    id BIGINT(20) UNSIGNED NOT NULL,
+    tokenable_type VARCHAR(191) NOT NULL,
+    tokenable_id BIGINT(20) UNSIGNED NOT NULL,
+    name VARCHAR(191) NOT NULL,
+    token VARCHAR(64) NOT NULL,
+    abilities TEXT DEFAULT NULL,
+    last_used_at TIMESTAMP NULL DEFAULT NULL,
+    expires_at TIMESTAMP NULL DEFAULT NULL,
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE `personal_access_tokens`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
+  ADD KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`);
+
+ALTER TABLE `personal_access_tokens`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+
 DROP TABLE IF EXISTS USERS;
 CREATE TABLE USERS (
     id INT NOT NULL,
     username VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
+    remember_token varchar(100) DEFAULT NULL,
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP
     is_admin BOOLEAN DEFAULT FALSE,
     is_active BOOLEAN DEFAULT FALSE,
     CONSTRAINT pk_users_id PRIMARY KEY (id)
 );
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `users_email_unique` (`email`);
+
+ALTER TABLE `users`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+COMMIT;
 
 DROP TABLE IF EXISTS REPORT_STATUS;
 CREATE TABLE REPORT_STATUS (
