@@ -65,7 +65,8 @@ class Sql_Strings():
         "UPDATE reports SET "
         "report_title = %(report_title)s, "
         "report_description = %(report_description)s, "
-        "category_id = %(category_id)s "
+        "category_id = %(category_id)s, "
+        "last_updated_dt = CURRENT_TIMESTAMP, "
         "WHERE id = %(id_report)s"
     )
     
