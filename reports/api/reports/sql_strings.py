@@ -100,7 +100,8 @@ class Sql_Strings():
     
     LOGIC_DELETE_REPORT = (
         "UPDATE reports SET "
-        "status_id = 4"
+        "status_id = 4 "
+        "WHERE id = %(id_report)s "
     )
     
     GET_REPORT_IMAGE_BY_ID = (
