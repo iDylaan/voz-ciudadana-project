@@ -4,9 +4,25 @@ COLLATE utf8mb4_unicode_ci;
 
 USE VOZ_CIUDADANA_DB;
 
+
+DROP TABLE IF EXISTS USERS;
+CREATE TABLE USERS (
+    id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    remember_token varchar(100) DEFAULT NULL,
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    is_admin BOOLEAN DEFAULT FALSE,
+    is_active BOOLEAN DEFAULT FALSE,
+    CONSTRAINT pk_users_id PRIMARY KEY (id),
+    CONSTRAINT uc_users_email UNIQUE (email)
+) AUTO_INCREMENT = 7;
+
 DROP TABLE IF EXISTS PERSONAL_ACCESS_TOKENS;
 CREATE TABLE PERSONAL_ACCESS_TOKENS (
-    id BIGINT(20) UNSIGNED NOT NULL,
+    id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
     tokenable_type VARCHAR(191) NOT NULL,
     tokenable_id BIGINT(20) UNSIGNED NOT NULL,
     name VARCHAR(191) NOT NULL,
@@ -15,38 +31,11 @@ CREATE TABLE PERSONAL_ACCESS_TOKENS (
     last_used_at TIMESTAMP NULL DEFAULT NULL,
     expires_at TIMESTAMP NULL DEFAULT NULL,
     created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-ALTER TABLE `personal_access_tokens`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
-  ADD KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`);
-
-ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
-
-
-DROP TABLE IF EXISTS USERS;
-CREATE TABLE USERS (
-    id INT NOT NULL,
-    username VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    remember_token varchar(100) DEFAULT NULL,
-    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP
-    is_admin BOOLEAN DEFAULT FALSE,
-    is_active BOOLEAN DEFAULT FALSE,
-    CONSTRAINT pk_users_id PRIMARY KEY (id)
-);
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `users_email_unique` (`email`);
-
-ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-COMMIT;
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT pk_personal_access_tokens_id PRIMARY KEY (id),
+    CONSTRAINT uc_personal_access_tokens_token UNIQUE (token),
+    CONSTRAINT fk_personal_access_tokens_users FOREIGN KEY (tokenable_id) REFERENCES USERS(id) ON DELETE CASCADE
+) AUTO_INCREMENT = 10;
 
 DROP TABLE IF EXISTS REPORT_STATUS;
 CREATE TABLE REPORT_STATUS (
@@ -70,7 +59,7 @@ CREATE TABLE REPORTS (
     creation_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_updated_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     coords VARCHAR(255) NOT NULL,
-    user_id INT,
+    user_id BIGINT(20) UNSIGNED,
     category_id INT,
     status_id INT,
     CONSTRAINT pk_reports_id PRIMARY KEY (id),
@@ -83,7 +72,7 @@ DROP TABLE IF EXISTS REPORT_CONFIRMATIONS;
 CREATE TABLE REPORT_CONFIRMATIONS (
     id INT NOT NULL AUTO_INCREMENT,
     report_id INT NOT NULL,
-    user_id INT NOT NULL,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
     unconfirmed BOOLEAN NOT NULL DEFAULT FALSE,
     confirmed_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT pk_report_confirmations_id PRIMARY KEY (id),
@@ -95,7 +84,7 @@ DROP TABLE IF EXISTS REPORT_FIXED_CONFIRMATIONS;
 CREATE TABLE REPORT_FIXED_CONFIRMATIONS (
     id INT NOT NULL AUTO_INCREMENT,
     report_id INT NOT NULL,
-    user_id INT NOT NULL,
+    user_id BIGINT(20) UNSIGNED NOT NULL,
     unconfirmed BOOLEAN NOT NULL DEFAULT FALSE,
     confirmed_dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT pk_report_fixed_confirmations_id PRIMARY KEY (id),
@@ -123,6 +112,7 @@ INSERT INTO REPORT_STATUS (status_name) VALUES
 
 -- REPORTS API USER DB --
 -- Creacion el usuario
+DROP USER 'REPORTS_API_USER'@'%';
 CREATE USER 'REPORTS_API_USER'@'%' IDENTIFIED BY 'reports_api_user_pass2023*';
 
 -- Otorgar permisos de SELECT, INSERT y UPDATE para las tablas especificadas
@@ -142,10 +132,20 @@ FLUSH PRIVILEGES;
 
 -- AUTH API USER DB --
 -- Creacion el usuario
+DROP USER 'AUTH_API_USER'@'%';
 CREATE USER 'AUTH_API_USER'@'%' IDENTIFIED BY 'auth_api_user_pass2023*';
 
--- Otorgar permisos de SELECT, INSERT y UPDATE para la tabla USERS
+-- Otorgar permisos de SELECT, INSERT y UPDATE para la tabla USERS y PERSONAL_ACCESS_TOKENS
+GRANT SELECT, INSERT, UPDATE ON VOZ_CIUDADANA_DB.PERSONAL_ACCESS_TOKENS TO 'AUTH_API_USER'@'%';
 GRANT SELECT, INSERT, UPDATE ON VOZ_CIUDADANA_DB.USERS TO 'AUTH_API_USER'@'%';
 
 -- Aplicar los cambios
 FLUSH PRIVILEGES;
+
+
+
+--- CREDENCIALES ---
+--user: admin--
+--pass: V0z_C1ud4dan4_701*--
+--host: voz-ciudadana-rds-1.cuhuub668g0y.us-east-2.rds.amazonaws.com--
+--port: 3306--
