@@ -53,6 +53,14 @@ report_update_schema = {
     "category_id": {
         "type": "integer",
         "required": True
+    },
+    "coords": {
+        "type": "dict",
+        "schema": {
+            "lat": {"type": "float", "required": True},  # Rango de latitudes válidas
+            "lng": {"type": "float", "required": True}  # Rango de longitudes válidas
+        },
+        "required": False
     }
 }
 
