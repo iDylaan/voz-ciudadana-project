@@ -1,5 +1,5 @@
 import datetime
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, json
 from .sql_strings import Sql_Strings as SQL_STRINGS
 from api.utils.misc import val_req_data, handle_error, get_dict_coords
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -52,10 +52,12 @@ def get_reports():
                 "username": report["username"]
             } 
             result_report["coords"] = get_dict_coords(report["coords"])
-            if report["images"] is not None:
-                result_report["images"] = report["images"].split(",")
-            else:
-                result_report["images"] = []
+            result_report["images"] = []
+            if report["images"]:
+                images_dict = [json.loads(segment) for segment in str(report["images"]).split('|')]
+                for image in images_dict:
+                    if image["id"] is not None and image["image"] is not None:
+                        result_report["images"].append(image)
             result_reports.append(result_report)
         return jsonify({
             'status': result["status"],
@@ -92,17 +94,19 @@ def get_report(id_report):
             "id":result["data"]["status_id"],
             "status_name":result["data"]["status_name"]
         }
-        result_report["created_at"] =result["data"]["creation_dt"]
-        result_report["last_update"] =result["data"]["last_updated_dt"]
+        result_report["created_at"] = result["data"]["creation_dt"]
+        result_report["last_update"] = result["data"]["last_updated_dt"]
         result_report["user"] = {
             "id":result["data"]["user_id"],
             "username":result["data"]["username"]
         } 
         result_report["coords"] = get_dict_coords(result["data"]["coords"])
-        if result["data"]["images"] is not None:
-            result_report["images"] = result["data"]["images"].split(",")
-        else:
-            result_report["images"] = []
+        result_report["images"] = []
+        if result["data"]["images"]:
+            images_dict = [json.loads(segment) for segment in str(result["data"]["images"]).split('|')]
+            for image in images_dict:
+                if image["id"] is not None and image["image"] is not None:
+                    result_report["images"].append(image)
         return jsonify({
             'status': result["status"],
             'data': result_report
