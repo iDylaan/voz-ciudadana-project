@@ -172,16 +172,17 @@ def create_report():
         if (result["status"] != "OK"):
             return handle_error({'description': 'Error inesperado en el registro del reporte', 'code': 500}), 500
         
-        values_insrt = ''
-        for index, image in enumerate(new_report['images']):
-            values_insrt += '(\'{}\', {}, 1), '.format(image, result['last_insert_id']) \
-                if index < len(new_report['images']) - 1 \
-                else '(\'{}\', {}, 1)'.format(image, result['last_insert_id'])
-        new_report['id'] = result['last_insert_id']
-        
-        result = sql(SQL_STRINGS.INSERT_REPORT_IMAGES.format(values_insrt))
-        if (result["status"] != "OK"):
-            return handle_error({'description': 'Error inesperado en el registro de las imagenes del reporte', 'code': 500}), 500
+        if images is not None:
+            values_insrt = ''
+            for index, image in enumerate(new_report['images']):
+                values_insrt += '(\'{}\', {}, 1), '.format(image, result['last_insert_id']) \
+                    if index < len(new_report['images']) - 1 \
+                    else '(\'{}\', {}, 1)'.format(image, result['last_insert_id'])
+            new_report['id'] = result['last_insert_id']
+            
+            result = sql(SQL_STRINGS.INSERT_REPORT_IMAGES.format(values_insrt))
+            if (result["status"] != "OK"):
+                return handle_error({'description': 'Error inesperado en el registro de las imagenes del reporte', 'code': 500}), 500
         
         new_report['coords'] = get_dict_coords(new_report['coords'])
         return jsonify({"status": 'OK', "data": new_report}), 200
