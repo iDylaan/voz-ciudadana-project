@@ -66,6 +66,7 @@ class Sql_Strings():
         "report_title = %(report_title)s, "
         "report_description = %(report_description)s, "
         "category_id = %(category_id)s, "
+        "coords = %(coords)s, "
         "last_updated_dt = CURRENT_TIMESTAMP, "
         "WHERE id = %(id_report)s"
     )

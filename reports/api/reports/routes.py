@@ -214,6 +214,7 @@ def update_report(id_report):
         description = data.get("description", None)
         user_id = data.get("user_id", None)
         category_id = data.get("category_id", None)
+        coords = data.get("coords", None)
         if not title \
         or not user_id \
         or not category_id:
@@ -230,16 +231,18 @@ def update_report(id_report):
             "title": old_report["title"] if title is None else title,
             "description": old_report["report_description"] if description is None else description,
             "category_id": old_report["category_id"] if category_id is None else int(category_id),
+            "coords": old_report["coords"] if coords is None else coords
         }
         
         errors = val_req_data(new_report, report_update_schema)
         if errors:
             return handle_error({'description': 'Error en la validación de la petición','code': 400, 'details': errors}), 400
-        
+        new_report['coords'] = 'lat:{}, lng:{}'.format(new_report['coords']['lat'], new_report['coords']['lng'])
         result = sql(SQL_STRINGS.UPDATE_REPORT, {
             "report_title": new_report['title'],
             "report_description": new_report['description'],
             "category_id": new_report['category_id'],
+            "coords": new_report['coords'],
             "id_report": id_report
         })
         if (result["status"] != "OK"):
