@@ -1,0 +1,202 @@
+<script setup>
+</script>
+
+
+<template>
+    <div class="vc-navbar">
+        <ul id="slide-out" class="sidenav">
+            <li>
+                <div class="user-view">
+                    <div class="background">
+                        <img src="">
+                    </div>
+                    <a href="#user"><img class="circle" src=""></a>
+                    <a href="#name"><span class="white-text name">John Doe</span></a>
+                    <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
+                </div>
+            </li>
+            <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
+            <li><a href="#!">Second Link</a></li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li><a class="subheader">Subheader</a></li>
+            <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
+        </ul>
+        <div class="background">
+            <button class="menu__icon sidenav-trigger" href="#" data-target="slide-out">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </div>
+</template>
+
+
+<style lang="scss" scoped>
+/* <reset-style> ============================ */
+button {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* ============================ */
+/* <style for bg> ======== */
+.background {
+    border-radius: 16px;
+    border: 1px solid #1a1a1a;
+    background: rgba(74, 74, 74, 0.39);
+    mix-blend-mode: luminosity;
+    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.20);
+    backdrop-filter: blur(15px);
+    width: 65px;
+    height: 65px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* <style for menu__icon> ======== */
+.menu__icon {
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+}
+
+.menu__icon span {
+    display: block;
+    width: 100%;
+    height: 0.125rem;
+    border-radius: 2px;
+    background-color: rgb(0, 122, 255);
+    box-shadow: 0 .5px 2px 0 hsla(0, 0%, 0%, .2);
+    transition: background-color .4s;
+    position: relative;
+}
+
+.menu__icon span+span {
+    margin-top: .375rem;
+}
+
+.menu__icon span:nth-child(1) {
+    animation: ease .8s menu-icon-top-2 forwards;
+}
+
+.menu__icon span:nth-child(2) {
+    animation: ease .8s menu-icon-scaled-2 forwards;
+}
+
+.menu__icon span:nth-child(3) {
+    animation: ease .8s menu-icon-bottom-2 forwards;
+}
+
+.menu__icon:hover span:nth-child(1) {
+    animation: ease .8s menu-icon-top forwards;
+}
+
+.menu__icon:hover span:nth-child(2) {
+    animation: ease .8s menu-icon-scaled forwards;
+}
+
+.menu__icon:hover span:nth-child(3) {
+    animation: ease .8s menu-icon-bottom forwards;
+    background-color: rgb(255, 59, 48);
+}
+
+@keyframes menu-icon-top {
+    0% {
+        top: 0;
+        transform: rotate(0);
+    }
+
+    50% {
+        top: .5rem;
+        transform: rotate(0);
+    }
+
+    100% {
+        top: .5rem;
+        transform: rotate(45deg);
+    }
+}
+
+@keyframes menu-icon-top-2 {
+    0% {
+        top: .5rem;
+        transform: rotate(45deg);
+    }
+
+    50% {
+        top: .5rem;
+        transform: rotate(0);
+    }
+
+    100% {
+        top: 0;
+        transform: rotate(0);
+    }
+}
+
+@keyframes menu-icon-bottom {
+    0% {
+        bottom: 0;
+        transform: rotate(0);
+    }
+
+    50% {
+        bottom: .5rem;
+        transform: rotate(0);
+    }
+
+    100% {
+        bottom: .5rem;
+        transform: rotate(135deg);
+    }
+}
+
+@keyframes menu-icon-bottom-2 {
+    0% {
+        bottom: .5rem;
+        transform: rotate(135deg);
+    }
+
+    50% {
+        bottom: .5rem;
+        transform: rotate(0);
+    }
+
+    100% {
+        bottom: 0;
+        transform: rotate(0);
+    }
+}
+
+@keyframes menu-icon-scaled {
+    50% {
+        transform: scale(0);
+    }
+
+    100% {
+        transform: scale(0);
+    }
+}
+
+@keyframes menu-icon-scaled-2 {
+    0% {
+        transform: scale(0);
+    }
+
+    50% {
+        transform: scale(0);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+</style>
