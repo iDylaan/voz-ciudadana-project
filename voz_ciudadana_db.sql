@@ -147,5 +147,5 @@ FLUSH PRIVILEGES;
 --- CREDENCIALES ---
 --user: admin--
 --pass: V0z_C1ud4dan4_701*--
---host: voz-ciudadana-rds-1.cuhuub668g0y.us-east-2.rds.amazonaws.com--
+--host: voz-ciudadana.cuhuub668g0y.us-east-2.rds.amazonaws.com--
 --port: 3306--
