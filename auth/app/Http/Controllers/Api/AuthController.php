@@ -64,11 +64,6 @@ class AuthController extends Controller
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
 
-<<<<<<< HEAD
-       
-
-=======
->>>>>>> 759ed09454daa38821790471a9bd42fbd18fbe32
         return response()
             ->json([
                 'message' => 'Hi ' . $user->username,
