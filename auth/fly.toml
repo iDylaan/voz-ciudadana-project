@@ -1,0 +1,35 @@
+# fly.toml app configuration file generated for vozciudadanaauth on 2023-10-30T20:34:24-06:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "vozciudadanaauth"
+primary_region = "qro"
+console_command = "php /var/www/html/artisan tinker"
+
+[build]
+  [build.args]
+    NODE_VERSION = "18"
+    PHP_VERSION = "8.2"
+
+[env]
+  APP_ENV = "production"
+  LOG_CHANNEL = "stderr"
+  LOG_LEVEL = "info"
+  LOG_STDERR_FORMATTER = "Monolog\\Formatter\\JsonFormatter"
+  SESSION_DRIVER = "cookie"
+  SESSION_SECURE_COOKIE = "true"
+  DB_CONNECTION = "mysql"
+  DB_HOST= "voz-ciudadana.cuhuub668g0y.us-east-2.rds.amazonaws.com"
+  DB_PORT = 3306
+  DB_DATABASE = "VOZ_CIUDADANA_DB"
+  DB_USERNAME = "AUTH_API_USER"
+  DB_PASSWORD = "auth_api_user_pass2023*"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
