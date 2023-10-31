@@ -64,6 +64,11 @@ class AuthController extends Controller
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
 
+        return response()->json([
+            'token' => $token
+        ]);
+        $decodedToken = JWTAuth::decode(JWTAuth::getToken());
+        return response()->json($decodedToken);
 
         return response()
             ->json([
