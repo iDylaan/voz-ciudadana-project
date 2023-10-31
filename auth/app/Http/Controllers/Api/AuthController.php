@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use Symfony\Component\HttpFoundation\Response;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
+
 
 
 class AuthController extends Controller
@@ -36,17 +39,35 @@ class AuthController extends Controller
 
 
     public function login(Request $request){
-        if(!Auth::attempt($request->only('email','password'))){
+        // Creamos un array de credenciales
+        $credentials = $request->only('email', 'password');
+        
+        // Añadimos el criterio de 'is_active' al array de credenciales
+        $credentials['is_active'] = 1;
+
+        // Verificamos que las credenciales sean correctas y que el usuario esté activo
+        if(!Auth::attempt($credentials)){
             return response()
-            ->json(['message'=>'Unauthorized'],401);
+                ->json(['message'=>'No se encontraron las credenciales o la cuenta no está activa'], 401);
         }
 
-        $user = User::where('email',$request['email'])->firstOrFail();
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $user = Auth::user();
+
+        try {
+            $customClaims = [
+                'name' => $user->username,
+                'id' => $user->id,
+                'admin' => $user->is_admin 
+            ];
+            $token = JWTAuth::fromUser($user, $customClaims);
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'could_not_create_token'], 500);
+        }
+
 
         return response()
             ->json([
-                'message' => 'Hi '.$user->username,
+                'message' => 'Hi ' . $user->username,
                 'accessToken' => $token,
                 'token_type' => 'Bearer',
                 'user' => $user,
@@ -60,3 +81,4 @@ class AuthController extends Controller
         ];
     } 
 }
+
