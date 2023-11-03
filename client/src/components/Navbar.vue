@@ -1,4 +1,15 @@
 <script setup>
+import { ref, onMounted } from 'vue';
+const menuActive = ref(false);
+
+onMounted(() => {
+    M.AutoInit();
+});
+
+
+const toggleMenu = () => {
+    menuActive.value = !menuActive.value;
+};
 </script>
 
 
@@ -8,9 +19,9 @@
             <li>
                 <div class="user-view">
                     <div class="background">
-                        <img src="">
+                        <img src="images/office.jpg">
                     </div>
-                    <a href="#user"><img class="circle" src=""></a>
+                    <a href="#user"><img class="circle" src="images/yuna.jpg"></a>
                     <a href="#name"><span class="white-text name">John Doe</span></a>
                     <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
                 </div>
@@ -23,8 +34,9 @@
             <li><a class="subheader">Subheader</a></li>
             <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
         </ul>
-        <div class="background">
-            <button class="menu__icon sidenav-trigger" href="#" data-target="slide-out">
+        <div class="background__button">
+            <button class="menu__icon sidenav-trigger" @click="toggleMenu" :class="menuActive ? 'menu__active' : ''"
+                href="#" data-target="slide-out">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -47,18 +59,21 @@ button {
 
 /* ============================ */
 /* <style for bg> ======== */
-.background {
-    border-radius: 16px;
-    border: 1px solid #1a1a1a;
-    background: rgba(74, 74, 74, 0.39);
+.background__button {
     mix-blend-mode: luminosity;
-    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.20);
     backdrop-filter: blur(15px);
-    width: 65px;
-    height: 65px;
+    width: 55px;
+    height: 55px;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.sidenav-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 998;
 }
 
 /* <style for menu__icon> ======== */
@@ -73,8 +88,7 @@ button {
     width: 100%;
     height: 0.125rem;
     border-radius: 2px;
-    background-color: rgb(0, 122, 255);
-    box-shadow: 0 .5px 2px 0 hsla(0, 0%, 0%, .2);
+    background-color: rgb(255, 255, 255);
     transition: background-color .4s;
     position: relative;
 }
@@ -95,15 +109,15 @@ button {
     animation: ease .8s menu-icon-bottom-2 forwards;
 }
 
-.menu__icon:hover span:nth-child(1) {
+.menu__active span:nth-child(1) {
     animation: ease .8s menu-icon-top forwards;
 }
 
-.menu__icon:hover span:nth-child(2) {
+.menu__active span:nth-child(2) {
     animation: ease .8s menu-icon-scaled forwards;
 }
 
-.menu__icon:hover span:nth-child(3) {
+.menu__active span:nth-child(3) {
     animation: ease .8s menu-icon-bottom forwards;
     background-color: rgb(255, 59, 48);
 }
@@ -198,5 +212,4 @@ button {
     100% {
         transform: scale(1);
     }
-}
-</style>
+}</style>
