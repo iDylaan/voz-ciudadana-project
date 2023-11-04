@@ -1,16 +1,55 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 const menuActive = ref(false);
+const authed = ref(true);
 
 onMounted(() => {
     M.AutoInit();
+
+    // Reset menuActive
+    M.Sidenav.getInstance(document.querySelector('.sidenav')).close();
+
+    // Añade el listener después de que el componente y Materialize estén inicializados
+    document.addEventListener('click', (e) => {
+        // Comprueba si el clic fue en el sidenav-overlay
+        if (e.target.classList.contains('sidenav-overlay')) {
+            handleOverlayClick();
+        } else if (e.target.classList.contains('sidenav-close')) {
+            toggleMenu();
+        }
+    });
+});
+
+onBeforeUnmount(() => {
+    // Elimina el listener para prevenir fugas de memoria
+    document.removeEventListener('click', (e) => {
+        if (e.target.classList.contains('sidenav-overlay')) {
+            handleOverlayClick();
+        } else if (e.target.classList.contains('sidenav-close')) {
+            toggleMenu();
+        }
+    });
 });
 
 
 const toggleMenu = () => {
     menuActive.value = !menuActive.value;
+
+    if (menuActive.value) {
+        M.Sidenav.getInstance(document.querySelector('.sidenav')).open();
+    } else {
+        M.Sidenav.getInstance(document.querySelector('.sidenav')).close();
+    }
 };
+
+const handleOverlayClick = () => {
+    menuActive.value = false;
+};
+
+const logout = () => { console.log("Cerrando sesión...") };
 </script>
+
+
 
 
 <template>
@@ -19,24 +58,38 @@ const toggleMenu = () => {
             <li>
                 <div class="user-view">
                     <div class="background">
-                        <img src="images/office.jpg">
+                        <span class="black-opacity"></span>
                     </div>
-                    <a href="#user"><img class="circle" src="images/yuna.jpg"></a>
-                    <a href="#name"><span class="white-text name">John Doe</span></a>
+                    <a href="#user-pic"><img class="circle" src="@/assets/icon/profile-pictures/profilePic14.svg"></a>
+                    <a href="#namename"><span class="white-text name">John Doe</span></a>
                     <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
                 </div>
             </li>
-            <li><a href="#!"><i class="material-icons">cloud</i>First Link With Icon</a></li>
-            <li><a href="#!">Second Link</a></li>
+            <li><router-link class="waves-effect sidenav-close" to="/"><i
+                        class="material-icons">home</i>Inicio</router-link></li>
+            <li><router-link class="waves-effect sidenav-close" to="/"><i
+                        class="material-icons">reports</i>Reportes</router-link></li>
+            <li><router-link class="waves-effect sidenav-close" to="/"><i class="material-icons">map</i>Mapa de
+                    reportes</router-link></li>
+            <li><router-link class="waves-effect sidenav-close" to="/"><i
+                        class="material-icons">dashboard</i>Dashboard</router-link></li>
             <li>
                 <div class="divider"></div>
             </li>
-            <li><a class="subheader">Subheader</a></li>
-            <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
+            <li><router-link class="waves-effect sidenav-close" to="/"><i class="material-icons">assignment_add</i>Nuevo
+                    reporte</router-link></li>
+            <li>
+                <div class="divider"></div>
+            </li>
+            <li v-if="!authed"><router-link class="waves-effect sidenav-close" to="/login"><i
+                        class="material-icons">login</i>Iniciar
+                    Sesión</router-link></li>
+            <li v-if="authed"><a class="waves-effect sidenav-close" @click="logout"><i
+                        class="material-icons">logout</i>Cerrar Sesión</a></li>
         </ul>
         <div class="background__button">
-            <button class="menu__icon sidenav-trigger" @click="toggleMenu" :class="menuActive ? 'menu__active' : ''"
-                href="#" data-target="slide-out">
+            <button class="menu__icon" @click="toggleMenu" :class="menuActive ? 'menu__active' : ''"
+                data-target="slide-out">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -47,6 +100,42 @@ const toggleMenu = () => {
 
 
 <style lang="scss" scoped>
+.vc-navbar {
+    position: static;
+}
+
+.circle {
+    background-color: white;
+    padding: 3px;
+    box-shadow:
+        0px 0.9px 2.2px rgba(0, 0, 0, 0.011),
+        0px 2.1px 5.3px rgba(0, 0, 0, 0.016),
+        0px 3.9px 10px rgba(0, 0, 0, 0.02),
+        0px 6.9px 17.9px rgba(0, 0, 0, 0.024),
+        0px 13px 33.4px rgba(0, 0, 0, 0.029),
+        0px 31px 80px rgba(0, 0, 0, 0.04);
+}
+
+.background {
+    background-image: url('@/assets/img/profile-banners/banner1.svg');
+    background-repeat: repeat;
+    position: relative;
+    height: 150px;
+
+    .black-opacity {
+        position: absolute;
+        /* Esto saca al elemento del flujo normal y lo posiciona en relación a su contenedor más cercano con posición relativa o absoluta */
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.2);
+        /* Color negro con opacidad, no es necesario el `opacity` si usas rgba */
+        width: 100%;
+        height: 100%;
+    }
+}
+
 /* <reset-style> ============================ */
 button {
     border: none;
@@ -67,13 +156,6 @@ button {
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.sidenav-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 998;
 }
 
 /* <style for menu__icon> ======== */
@@ -212,4 +294,5 @@ button {
     100% {
         transform: scale(1);
     }
-}</style>
+}
+</style>

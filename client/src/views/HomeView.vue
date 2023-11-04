@@ -10,7 +10,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="home">
+  <div class="home view-content">
     <Header />
     <router-link to="/login">Iniciar Sesión</router-link>
   </div>

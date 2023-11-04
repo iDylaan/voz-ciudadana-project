@@ -10,7 +10,7 @@ onMounted(() => {
 
 
 <template>
-    <div class="signup">
+    <div class="signup view-content">
         
     </div>
 </template>

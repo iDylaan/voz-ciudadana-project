@@ -1,0 +1,65 @@
+﻿<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%' viewBox='0 0 120 60'>
+    <rect fill='#cc5577' width='120' height='60' />
+    <g fill-opacity='1'>
+        <rect fill='#cc5577' width='12' height='11' />
+        <rect fill='#ce5776' x='12' width='12' height='11' />
+        <rect fill='#d05a76' y='10' width='12' height='11' />
+        <rect fill='#d15c75' x='24' width='12' height='11' />
+        <rect fill='#d35f74' x='12' y='10' width='12' height='11' />
+        <rect fill='#d46174' y='20' width='12' height='11' />
+        <rect fill='#d66473' x='36' width='12' height='11' />
+        <rect fill='#d76673' x='24' y='10' width='12' height='11' />
+        <rect fill='#d96972' x='12' y='20' width='12' height='11' />
+        <rect fill='#da6c72' y='30' width='12' height='11' />
+        <rect fill='#db6e71' x='48' width='12' height='11' />
+        <rect fill='#dc7171' x='36' y='10' width='12' height='11' />
+        <rect fill='#dd7471' x='24' y='20' width='12' height='11' />
+        <rect fill='#de7671' x='12' y='30' width='12' height='11' />
+        <rect fill='#df7971' y='40' width='12' height='11' />
+        <rect fill='#e07c71' x='60' width='12' height='11' />
+        <rect fill='#e17e71' x='48' y='10' width='12' height='11' />
+        <rect fill='#e28171' x='36' y='20' width='12' height='11' />
+        <rect fill='#e38471' x='24' y='30' width='12' height='11' />
+        <rect fill='#e38771' x='12' y='40' width='12' height='11' />
+        <rect fill='#e48972' y='50' width='12' height='11' />
+        <rect fill='#e58c72' x='72' width='12' height='11' />
+        <rect fill='#e58f73' x='60' y='10' width='12' height='11' />
+        <rect fill='#e69173' x='48' y='20' width='12' height='11' />
+        <rect fill='#e69474' x='36' y='30' width='12' height='11' />
+        <rect fill='#e79775' x='24' y='40' width='12' height='11' />
+        <rect fill='#e79a75' x='12' y='50' width='12' height='11' />
+        <rect fill='#e89c76' x='84' width='12' height='11' />
+        <rect fill='#e89f77' x='72' y='10' width='12' height='11' />
+        <rect fill='#e8a278' x='60' y='20' width='12' height='11' />
+        <rect fill='#e9a47a' x='48' y='30' width='12' height='11' />
+        <rect fill='#e9a77b' x='36' y='40' width='12' height='11' />
+        <rect fill='#e9aa7c' x='24' y='50' width='12' height='11' />
+        <rect fill='#e9ac7e' x='96' width='12' height='11' />
+        <rect fill='#eaaf7f' x='84' y='10' width='12' height='11' />
+        <rect fill='#eab281' x='72' y='20' width='12' height='11' />
+        <rect fill='#eab482' x='60' y='30' width='12' height='11' />
+        <rect fill='#eab784' x='48' y='40' width='12' height='11' />
+        <rect fill='#eaba86' x='36' y='50' width='12' height='11' />
+        <rect fill='#ebbc88' x='108' width='12' height='11' />
+        <rect fill='#ebbf8a' x='96' y='10' width='12' height='11' />
+        <rect fill='#ebc18c' x='84' y='20' width='12' height='11' />
+        <rect fill='#ebc48e' x='72' y='30' width='12' height='11' />
+        <rect fill='#ebc790' x='60' y='40' width='12' height='11' />
+        <rect fill='#ebc992' x='48' y='50' width='12' height='11' />
+        <rect fill='#ebcc94' x='108' y='10' width='12' height='11' />
+        <rect fill='#ebce97' x='96' y='20' width='12' height='11' />
+        <rect fill='#ebd199' x='84' y='30' width='12' height='11' />
+        <rect fill='#ecd39c' x='72' y='40' width='12' height='11' />
+        <rect fill='#ecd69e' x='60' y='50' width='12' height='11' />
+        <rect fill='#ecd8a1' x='108' y='20' width='12' height='11' />
+        <rect fill='#ecdba4' x='96' y='30' width='12' height='11' />
+        <rect fill='#ecdda6' x='84' y='40' width='12' height='11' />
+        <rect fill='#ece0a9' x='72' y='50' width='12' height='11' />
+        <rect fill='#ede2ac' x='108' y='30' width='12' height='11' />
+        <rect fill='#ede4af' x='96' y='40' width='12' height='11' />
+        <rect fill='#ede7b2' x='84' y='50' width='12' height='11' />
+        <rect fill='#ede9b5' x='108' y='40' width='12' height='11' />
+        <rect fill='#eeecb8' x='96' y='50' width='12' height='11' />
+        <rect fill='#EEB' x='108' y='50' width='12' height='11' />
+    </g>
+</svg>

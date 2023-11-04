@@ -27,6 +27,7 @@ header {
     height: 60px;
     place-content: center;
     background-color: #082933;
+    z-index: 1000;
     
     .header__container {
         width: 98vw;

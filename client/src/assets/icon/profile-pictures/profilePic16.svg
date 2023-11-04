@@ -1,0 +1,42 @@
+<svg id="SvgjsSvg1222" width="256" height="256" xmlns="http://www.w3.org/2000/svg" version="1.1"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs">
+    <defs id="SvgjsDefs1223"></defs>
+    <g id="SvgjsG1224"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="256" height="256">
+            <g data-name="avatar man people user profile hoddie" fill="#000000" class="color000 svgShape">
+                <path fill="#c5c5dd"
+                    d="M334.627 353.37H177.373a78.627 78.627 0 0 0-78.627 78.628c0 17.369 3.505 25.504 31.451 31.451 0 0 94.082 16.551 125.804 16.551s125.804-16.55 125.804-16.55c27.946-5.948 31.451-14.083 31.451-31.452a78.627 78.627 0 0 0-78.627-78.627Z"
+                    class="colorc5c5dd svgShape"></path>
+                <path fill="#9a9ac1"
+                    d="m387.933 372.767-10.73-34.604c-13.059-37.217-65.87-50.384-65.87-50.384H200.667s-52.812 13.167-65.87 50.384l-10.73 34.604a19.9 19.9 0 0 0 5.47 20.566C159.16 420.484 237.734 426.81 256 396c18.266 30.811 96.841 24.484 126.463-2.667a19.9 19.9 0 0 0 5.47-20.566Z"
+                    class="color9a9ac1 svgShape"></path>
+                <path fill="#afafce"
+                    d="M297.695 300.539h-83.39c-17.28 10.027-69.923 65.924-70.136 68.057L157.823 396h196.354l13.654-27.404c-.213-2.133-52.855-58.03-70.137-68.057Z"
+                    class="colorafafce svgShape"></path>
+                <path fill="#d7d7f7"
+                    d="m124.067 372.767 10.73-34.604S155.07 365.09 256 396c-18.266 30.811-96.841 24.484-126.463-2.667a19.9 19.9 0 0 1-5.47-20.566m263.866 0-10.73-34.604S356.93 365.09 256 396c18.266 30.811 96.841 24.484 126.463-2.667a19.9 19.9 0 0 0 5.47-20.566"
+                    class="colord7d7f7 svgShape"></path>
+                <path fill="#f2a783"
+                    d="M256 400.547s-47.177-21.122-47.177-47.176V321.92h94.353v31.451c0 26.055-47.176 47.176-47.176 47.176Z"
+                    class="colorf2a783 svgShape"></path>
+                <path fill="#f08c74"
+                    d="M208.823 353.17c12.92 5.95 28.387 9.636 47.177 9.636s34.257-3.686 47.176-9.637v-21.814h-94.353Z"
+                    class="colorf08c74 svgShape"></path>
+                <path fill="#ffffff" d="M199.488 454.048v-50.97a5 5 0 0 1 10 0v50.97Z" class="colorfff svgShape"></path>
+                <path fill="#afafce" d="M213.439 436.767v19.64a8.95 8.95 0 0 1-17.901 0v-19.64Z"
+                    class="colorafafce svgShape"></path>
+                <path fill="#ffffff" d="M312.42 454.048v-50.97a5 5 0 0 0-10 0v50.97Z" class="colorfff svgShape"></path>
+                <path fill="#afafce" d="M298.47 436.767v19.64a8.95 8.95 0 0 0 17.901 0v-19.64Z"
+                    class="colorafafce svgShape"></path>
+                <path fill="#3d3c3b"
+                    d="M361.042 100.091c9.05-112.945-306.899-94.796-212.335 73.752l222.965-6.33c38.824-28.394 17.744-87.878-10.63-67.422Z"
+                    class="color3d3c3b svgShape"></path>
+                <path fill="#f2a783"
+                    d="M364.843 252.437a7.93 7.93 0 0 1 6.51-6.507 31.73 31.73 0 0 0 26.177-30.944v-23.588a31.736 31.736 0 0 0-26.36-30.976 8.012 8.012 0 0 1-6.477-6.178 63.114 63.114 0 0 0-61.516-49.336h-94.353a63.114 63.114 0 0 0-61.516 49.336 8.012 8.012 0 0 1-6.476 6.178 31.736 31.736 0 0 0-26.361 30.976v23.588a31.73 31.73 0 0 0 26.176 30.944 7.93 7.93 0 0 1 6.51 6.507c5.506 34.359 27.08 96.215 108.843 96.215s103.337-61.856 108.843-96.215Z"
+                    class="colorf2a783 svgShape"></path>
+                <circle cx="207.651" cy="195.812" r="15.664" fill="#3d3c3b" transform="rotate(-45 207.65 195.812)"
+                    class="color3d3c3b svgShape"></circle>
+                <circle cx="304.356" cy="195.812" r="15.664" fill="#3d3c3b" transform="rotate(-45 304.356 195.812)"
+                    class="color3d3c3b svgShape"></circle>
+            </g>
+        </svg></g>
+</svg>

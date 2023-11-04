@@ -1,0 +1,29 @@
+<svg id="SvgjsSvg1241" width="256" height="256" xmlns="http://www.w3.org/2000/svg" version="1.1"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs">
+    <defs id="SvgjsDefs1242"></defs>
+    <g id="SvgjsG1243"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="256" height="256">
+            <g data-name="avatar man people user profile 5" fill="#000000" class="color000 svgShape">
+                <path fill="#b9c6c9"
+                    d="M334.627 353.37H177.373a78.627 78.627 0 0 0-78.627 78.628c0 17.369 3.505 25.504 31.451 31.451 0 0 94.082 16.551 125.804 16.551s125.804-16.55 125.804-16.55c27.946-5.948 31.451-14.083 31.451-31.452a78.627 78.627 0 0 0-78.627-78.627Z"
+                    class="colorb9c6c9 svgShape"></path>
+                <path fill="#ffd5b3"
+                    d="M256 400.547a47.176 47.176 0 0 1-47.176-47.176V321.92h94.352v31.451A47.176 47.176 0 0 1 256 400.547Z"
+                    class="colorffd5b3 svgShape"></path>
+                <path fill="#f4bda2"
+                    d="M208.823 353.17c12.92 5.95 28.387 9.636 47.177 9.636s34.257-3.686 47.176-9.637v-21.814h-94.353Z"
+                    class="colorf4bda2 svgShape"></path>
+                <path fill="#594a47"
+                    d="M318.59 44.096h-44.374c-10.321-6.674-23.133-10.989-38.48-11.813C111.228 25.602 130.74 119.71 130.74 182.794c190.82 0 7.035 2.004 251.629 2.004v-76.923a63.78 63.78 0 0 0-63.78-63.78Z"
+                    class="color594a47 svgShape"></path>
+                <path fill="#ffd5b3"
+                    d="M364.843 252.437a7.93 7.93 0 0 1 6.51-6.507 31.73 31.73 0 0 0 26.177-30.944v-23.588a31.736 31.736 0 0 0-26.36-30.976 8.012 8.012 0 0 1-6.477-6.178c-7.532-33.98-47.014-61.027-71.943-40.93a135.458 135.458 0 0 1-102.816 28.557c-21.051-2.769-39.308-2.116-42.598 12.246a8.194 8.194 0 0 1-6.506 6.305 31.736 31.736 0 0 0-26.36 30.976v23.589a31.73 31.73 0 0 0 26.177 30.943 7.93 7.93 0 0 1 6.51 6.507c5.506 34.359 27.08 96.215 108.843 96.215s103.337-61.856 108.843-96.215Z"
+                    class="colorffd5b3 svgShape"></path>
+                <circle cx="207.651" cy="195.812" r="15.664" fill="#3d3c3b" transform="rotate(-45 207.65 195.812)"
+                    class="color3d3c3b svgShape"></circle>
+                <circle cx="304.356" cy="195.812" r="15.664" fill="#3d3c3b" transform="rotate(-45 304.356 195.812)"
+                    class="color3d3c3b svgShape"></circle>
+                <path fill="#6e6b69" d="m256 128-.37-.009c-.24.007-.368.009-.368.009Z" class="color6e6b69 svgShape">
+                </path>
+            </g>
+        </svg></g>
+</svg>

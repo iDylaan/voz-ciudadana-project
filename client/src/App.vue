@@ -4,14 +4,14 @@
 
 
 <script setup>
-import { onMounted } from 'vue';
-
-onMounted(() => {
-  M.AutoInit();
-});
 </script>
 
 <style lang="scss">
 @import './assets/materialize-src/sass/materialize.scss';
+
+.view-content {
+  width: 100vw;
+  margin-top: 80px;
+}
 </style>
 

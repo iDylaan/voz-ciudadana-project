@@ -4,17 +4,16 @@ import { onMounted, ref } from 'vue';
 
 onMounted(() => {
   document.title = 'VC | Login';
+
 });
 
 </script>
 
 
 <template>
-    <div class="login">
-        <h1>LOGIN</h1>
-    </div>
+  <div class="login view-content">
+    <h1>LOGIN</h1>
+  </div>
 </template>
 
-<style lang="scss" scoped>
-    
-</style>
+<style lang="scss" scoped></style>
