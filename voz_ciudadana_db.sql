@@ -16,6 +16,9 @@ CREATE TABLE USERS (
     updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
     is_admin BOOLEAN DEFAULT FALSE,
     is_active BOOLEAN DEFAULT TRUE,
+    profile_picture INT DEFAULT 1,
+    profile_banner INT DEFAULT 1,
+    first_access BOOLEAN DEFAULT TRUE,
     CONSTRAINT pk_users_id PRIMARY KEY (id),
     CONSTRAINT uc_users_email UNIQUE (email)
 );
