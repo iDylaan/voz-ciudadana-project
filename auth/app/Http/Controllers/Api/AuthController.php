@@ -116,8 +116,8 @@ class AuthController extends Controller
             }
 
             // Actualizar el perfil del usuario
-            $user->profile_picture = $request->profile_pic;
-            $user->profile_banner = $request->profile_banner;
+            $user->profile_picture = intval($request->profile_pic);
+            $user->profile_banner = intval($request->profile_banner);
             $user->first_access = 0;
             $user->save();
 
