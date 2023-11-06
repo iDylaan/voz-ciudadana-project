@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 const menuActive = ref(false);
-const authed = ref(true);
+const authed = ref(false);
 
 onMounted(() => {
     M.AutoInit();
@@ -76,8 +76,10 @@ const logout = () => { console.log("Cerrando sesión...") };
             <li>
                 <div class="divider"></div>
             </li>
-            <li><router-link class="waves-effect sidenav-close" to="/"><i class="material-icons">assignment_add</i>Nuevo
+            <li><router-link class="waves-effect sidenav-close" to="/"><i class="material-icons">format_list_bulleted_add</i>Nuevo
                     reporte</router-link></li>
+            <li><router-link class="waves-effect sidenav-close" to="/"><i class="material-icons">list_alt</i>Mis
+                    reportes</router-link></li>
             <li>
                 <div class="divider"></div>
             </li>
@@ -100,6 +102,13 @@ const logout = () => { console.log("Cerrando sesión...") };
 
 
 <style lang="scss" scoped>
+@media only screen and (min-width: 992px) {
+    .user-view {
+        padding: 16px 16px 0;
+    }
+}
+
+
 .vc-navbar {
     position: static;
 }
