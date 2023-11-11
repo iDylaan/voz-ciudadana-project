@@ -24,7 +24,9 @@ const adminRoutes = [
 ]
 
 const userRoutes = [
-  {}
+  {
+    
+  }
 ]
 
 const router = createRouter({

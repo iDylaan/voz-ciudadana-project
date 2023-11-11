@@ -1,7 +1,8 @@
 <script setup>
 import { onMounted, ref, reactive } from 'vue';
-import auth_api from '@/api/auth_api.js';
+import { useStore } from 'vuex';
 
+const store = useStore();
 const signupReq = reactive({
   email: '',
   password: '',
@@ -15,17 +16,7 @@ const getValidateEmptyFields = () => signupReq.email !== '' || signupReq.passwor
 const signup = async () => {
   if (!confirmPassChecker()) return;
   if (!getValidateEmptyFields()) return;
-  try {
-    const response = await auth_api.post('/register', {
-      email: signupReq.email,
-      password: signupReq.password,
-      username: signupReq.username
-    });
-
-    console.log(response);
-  } catch (error) {
-    console.log(error);
-  }
+  store.dispatch('signup', signupReq);
 }
 
 onMounted(() => {
@@ -43,6 +34,7 @@ onMounted(() => {
       <input type="email" name="" placeholder="Email" v-model="signupReq.email">
       <input type="password" name="" placeholder="Password" v-model="signupReq.password">
       <input type="password" name="" placeholder="Password" v-model="signupReq.password_confirmation">
+      <p v-if="store.state.error !== ''" class="error-message">{{ store.state.error }}</p>
       <input type="submit" value="Registrarme">
     </form>
     <p>Ya tienes cuenta?, <router-link to="/login">Iniciar Sesión</router-link></p>

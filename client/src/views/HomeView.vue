@@ -20,7 +20,7 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-main{
+main {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -29,7 +29,7 @@ main{
   margin: 0 auto;
 }
 
-.btn-start{
+.btn-start {
   background: #022E40;
   color: #ffffff;
   padding: 10px;
@@ -40,15 +40,21 @@ main{
   text-align: center;
 }
 
-img{
+img {
   margin: 0 auto;
 }
 
-h1{
+h1 {
   text-align: center;
 }
 
-p{
+@media (width < 350px) {
+  h1 {
+    font-size: 2rem;
+  }
+}
+
+p {
   font-weight: lighter;
   letter-spacing: 10px;
   text-align: center;
