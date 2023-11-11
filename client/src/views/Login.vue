@@ -21,7 +21,7 @@ onMounted(() => {
       <input type="text" name="" id="" placeholder="Password">
       <input type="submit" value="Iniciar Sesion">
     </form>
-    <p>No tienes cuenta?, Registrate</p>
+    <p>No tienes cuenta?, <router-link to="/signup">Registrate</router-link></p>
   </main>
 </template>
 

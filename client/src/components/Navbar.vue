@@ -76,7 +76,8 @@ const logout = () => { console.log("Cerrando sesión...") };
             <li>
                 <div class="divider"></div>
             </li>
-            <li><router-link class="waves-effect sidenav-close" to="/"><i class="material-icons">format_list_bulleted_add</i>Nuevo
+            <li><router-link class="waves-effect sidenav-close" to="/"><i
+                        class="material-icons">format_list_bulleted_add</i>Nuevo
                     reporte</router-link></li>
             <li><router-link class="waves-effect sidenav-close" to="/"><i class="material-icons">list_alt</i>Mis
                     reportes</router-link></li>
