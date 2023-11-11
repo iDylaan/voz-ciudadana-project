@@ -10,11 +10,13 @@ const signupReq = reactive({
 });
 
 const confirmPassChecker = () => signupReq.password === signupReq.password_confirmation;
+const getValidateEmptyFields = () => signupReq.email !== '' || signupReq.password !== '' || signupReq.password_confirmation !== '' || signupReq.username !== '';
 
 const signup = async () => {
   if (!confirmPassChecker()) return;
+  if (!getValidateEmptyFields()) return;
   try {
-    const response = await auth_api.post('https://vozciudadanaauth.fly.dev/api/register', {
+    const response = await auth_api.post('/register', {
       email: signupReq.email,
       password: signupReq.password,
       username: signupReq.username
@@ -37,10 +39,10 @@ onMounted(() => {
     <img src="../assets/img/Logo Voz Ciudadana.svg" alt="" width="120" height="120">
     <h1>Registrarse</h1>
     <form @submit.prevent @submit="signup">
-      <input type="text" name="" id="" placeholder="Usuario" v-model="signupReq.username">
-      <input type="text" name="" id="" placeholder="Email" v-model="signupReq.email">
-      <input type="text" name="" id="" placeholder="Password" v-model="signupReq.password">
-      <input type="text" name="" id="" placeholder="Password" v-model="signupReq.password_confirmation">
+      <input type="text" name="" placeholder="Usuario" v-model="signupReq.username">
+      <input type="email" name="" placeholder="Email" v-model="signupReq.email">
+      <input type="password" name="" placeholder="Password" v-model="signupReq.password">
+      <input type="password" name="" placeholder="Password" v-model="signupReq.password_confirmation">
       <input type="submit" value="Registrarme">
     </form>
     <p>Ya tienes cuenta?, <router-link to="/login">Iniciar Sesión</router-link></p>
@@ -91,4 +93,5 @@ input[type="submit"] {
   color: red;
   border-bottom: 1px solid black;
   box-shadow: 0 1px 0 0 red;
-}</style>
+}
+</style>
