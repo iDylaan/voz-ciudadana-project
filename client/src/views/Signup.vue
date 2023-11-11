@@ -16,7 +16,7 @@ const getValidateEmptyFields = () => signupReq.email !== '' || signupReq.passwor
 const signup = async () => {
   if (!confirmPassChecker()) return;
   if (!getValidateEmptyFields()) return;
-  store.dispatch('signup', signupReq);
+  store.dispatch('auth/signup', signupReq);
 }
 
 onMounted(() => {

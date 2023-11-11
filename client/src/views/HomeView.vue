@@ -1,11 +1,17 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import Header from '@/components/Header.vue';
+import { tokenExpired } from "@/utils/misc.js";
 
+const token = localStorage.getItem('token') ? localStorage.getItem('token') : '';
+
+const authed = ref(!tokenExpired(token));
 
 onMounted(() => {
   document.title = 'VC | Home';
 });
+
+
 
 </script>
 
@@ -14,7 +20,7 @@ onMounted(() => {
   <main>
     <h1>Bienvenidos</h1>
     <img src="../assets/img/Logo Voz Ciudadana.svg" alt="" width="170" height="170">
-    <router-link class="btn-start" to="/login">Comenzar</router-link>
+    <router-link v-if="!authed" class="btn-start" to="/login">Comenzar</router-link>
     <p>LIFO</p>
   </main>
 </template>

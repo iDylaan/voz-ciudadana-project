@@ -2,9 +2,10 @@
 
 <script setup>
 import { useStore } from 'vuex';
-import { onMounted, ref, reactive } from 'vue';
+import { onMounted, ref, reactive, computed } from 'vue';
 
 const store = useStore();
+const error = computed(() => store.state.auth.error);
 const loginReq = reactive({
   email: '',
   password: ''
@@ -18,7 +19,7 @@ const getValidateEmptyFields = () => loginReq.email !== '' || loginReq.password 
 
 const login = async () => {
   if (!getValidateEmptyFields()) return;
-  await store.dispatch('login', loginReq);
+  await store.dispatch('auth/login', loginReq);
 };
 
 </script>
@@ -29,9 +30,10 @@ const login = async () => {
     <img src="../assets/img/Logo Voz Ciudadana.svg" alt="" width="120" height="120">
     <h1>Iniciar Sesion</h1>
     <form @submit.prevent @submit="login">
-      <input type="email" name="" placeholder="Email" v-model="loginReq.email" @input="store.commit('cleanError');">
-      <input type="password" name="" placeholder="Password" v-model="loginReq.password" @input="store.commit('cleanError');">
-      <p v-if="store.state.error !== ''" class="error-message">{{ store.state.error }}</p>
+      <input type="email" name="" placeholder="Email" v-model="loginReq.email" @input="store.commit('auth/cleanError');">
+      <input type="password" name="" placeholder="Password" v-model="loginReq.password"
+        @input="store.commit('auth/cleanError');">
+      <p v-if="error" class="error-message">{{ error }}</p>
       <input type="submit" value="Iniciar Sesion">
     </form>
     <p>No tienes cuenta?, <router-link to="/signup">Registrate</router-link></p>

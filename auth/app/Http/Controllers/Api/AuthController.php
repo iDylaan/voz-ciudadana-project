@@ -61,7 +61,10 @@ class AuthController extends Controller
             $customClaims = [
                 'name' => $user->username,
                 'id' => $user->id,
-                'admin' => $user->is_admin
+                'admin' => $user->is_admin,
+                'profile_pic' => $user->profile_picture,
+                'profile_banner' => $user->profile_banner,
+                'first_access' => $user->first_access
             ];
             $token = JWTAuth::fromUser($user, $customClaims);
         } catch (JWTException $e) {

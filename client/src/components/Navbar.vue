@@ -1,9 +1,33 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import { ref, onMounted, onBeforeUnmount, computed, reactive } from 'vue';
+import { tokenExpired } from "@/utils/misc.js";
+
+const router = useRouter();
+const store = useStore();
 const menuActive = ref(false);
+const token = ref(localStorage.getItem("token") ? localStorage.getItem("token") : '');
 const authed = ref(false);
 
+const userData = reactive({
+    username: null,
+    email: null,
+    isAdmin: null,
+    picProfile: null,
+    bannerProfile: null,
+});
+
+const userImageSrc = computed(() => {
+    return userData.picProfile !== null ? require(`@/assets/icon/profile-pictures/profilePic${userData.picProfile}.svg`) : '';
+});
+
+const userBannerStyle = computed(() => {
+    return userData.bannerProfile !== null ? `url(${require(`@/assets/img/profile-banners/banner${userData.bannerProfile}.svg`)})` : '';
+});
+
 onMounted(() => {
+    authed.value = !tokenExpired(token.value);
     M.AutoInit();
 
     // Reset menuActive
@@ -18,6 +42,13 @@ onMounted(() => {
             toggleMenu();
         }
     });
+
+
+    userData.username = store.state.auth.user.username || localStorage.getItem('username');
+    userData.email = store.state.auth.user.email || localStorage.getItem('email');
+    userData.isAdmin = store.state.auth.user.isAdmin || localStorage.getItem('is_admin');
+    userData.picProfile = store.state.auth.user.picProfile || localStorage.getItem('pic_profile');
+    userData.bannerProfile = store.state.auth.user.bannerProfile || localStorage.getItem('banner_profile');
 });
 
 onBeforeUnmount(() => {
@@ -46,7 +77,10 @@ const handleOverlayClick = () => {
     menuActive.value = false;
 };
 
-const logout = () => { console.log("Cerrando sesión...") };
+const logout = () => {
+    store.dispatch('auth/logout');
+    authed.value = false;
+};
 </script>
 
 
@@ -55,31 +89,33 @@ const logout = () => { console.log("Cerrando sesión...") };
 <template>
     <div class="vc-navbar">
         <ul id="slide-out" class="sidenav">
-            <li>
+            <li v-if="authed">
                 <div class="user-view">
-                    <div class="background">
+                    <div class="background" :style="{ backgroundImage: userBannerStyle }">
                         <span class="black-opacity"></span>
                     </div>
-                    <a href="#user-pic"><img class="circle" src="@/assets/icon/profile-pictures/profilePic14.svg"></a>
-                    <a href="#namename"><span class="white-text name">John Doe</span></a>
-                    <a href="#email"><span class="white-text email">jdandturk@gmail.com</span></a>
+                    <a href="#user-pic"><img class="circle" :src="userImageSrc"></a>
+                    <a href="#namename"><span class="white-text name">{{ userData.username }}</span></a>
+                    <a href="#email"><span class="white-text email">{{ userData.email }}</span></a>
                 </div>
             </li>
+
             <li><router-link class="waves-effect sidenav-close" to="/"><i
                         class="material-icons">home</i>Inicio</router-link></li>
             <li><router-link class="waves-effect sidenav-close" to="/"><i
                         class="material-icons">reports</i>Reportes</router-link></li>
             <li><router-link class="waves-effect sidenav-close" to="/"><i class="material-icons">map</i>Mapa de
                     reportes</router-link></li>
-            <li><router-link class="waves-effect sidenav-close" to="/"><i
+            <li v-if="authed"><router-link class="waves-effect sidenav-close" to="/"><i
                         class="material-icons">dashboard</i>Dashboard</router-link></li>
-            <li>
+            <li v-if="authed">
                 <div class="divider"></div>
             </li>
-            <li><router-link class="waves-effect sidenav-close" to="/"><i
+            <li v-if="authed"><router-link class="waves-effect sidenav-close" to="/"><i
                         class="material-icons">format_list_bulleted_add</i>Nuevo
                     reporte</router-link></li>
-            <li><router-link class="waves-effect sidenav-close" to="/"><i class="material-icons">list_alt</i>Mis
+            <li v-if="authed"><router-link class="waves-effect sidenav-close" to="/"><i
+                        class="material-icons">list_alt</i>Mis
                     reportes</router-link></li>
             <li>
                 <div class="divider"></div>
@@ -127,7 +163,6 @@ const logout = () => { console.log("Cerrando sesión...") };
 }
 
 .background {
-    background-image: url('@/assets/img/profile-banners/banner1.svg');
     background-repeat: repeat;
     position: relative;
     height: 150px;
