@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const authApi = axios.create({
-    baseURL: 'https://vozciudadanaauth.fly.dev/api',
+    baseURL: 'https://voz-ciudadana-auth.fly.dev/api',
     headers: {
         'Content-Type': 'application/json'
     }
