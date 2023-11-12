@@ -10,13 +10,15 @@ export async function login({ commit }, payload) {
 
         const { data } = response;
         localStorage.setItem('token', data.accessToken);
+        const firstAccess = data.user.first_access == 1 ? true : false;
         commit('setUser', {
             username: data.user.username,
             isAdmin: data.user.is_admin,
             email: data.user.email,
             userID: data.user.id,
             picProfile: data.user.profile_picture,
-            bannerProfile: data.user.profile_banner
+            bannerProfile: data.user.profile_banner,
+            firstAccess: firstAccess
         });
         commit('cleanError');
 

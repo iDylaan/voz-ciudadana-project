@@ -6,7 +6,8 @@ export default function () {
             "isAdmin": false,
             "id": null,
             "picProfile": null,
-            "bannerProfile": null
+            "bannerProfile": null,
+            "firstAccess": null,
         },
         error: ''
     }
