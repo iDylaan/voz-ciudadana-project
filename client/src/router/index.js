@@ -27,7 +27,13 @@ const publicRoutes = [
     path: '/:catchAll(.*)',
     name: 'not-found',
     component: () => import('../views/NotFound.vue')
-  }
+  },
+  {
+    path: '/reportes',
+    name: 'reportes',
+    component: () => import('../views/Reportes.vue')
+  },
+  
 ]
 
 const adminRoutes = [
