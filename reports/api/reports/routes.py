@@ -122,6 +122,7 @@ def get_report(id_report):
     
     
 @mod.route('/reports', methods=['POST'])
+@jwt_required()
 def create_report():
     try:
         data = request.get_json()
@@ -201,6 +202,7 @@ def create_report():
 
 
 @mod.route('/reports/<int:id_report>', methods=['PUT'])
+@jwt_required()
 def update_report(id_report):
     try:
         result = query(SQL_STRINGS.GET_REPORT_BY_ID, {'id_report': id_report}, True)
@@ -263,6 +265,7 @@ def update_report(id_report):
         
         
 @mod.route('/reports/<int:id_report>', methods=['DELETE'])
+@jwt_required()
 def delete_report(id_report):
     try:
         result = query(SQL_STRINGS.GET_REPORT_BY_ID, {'id_report': id_report}, True)
@@ -287,6 +290,7 @@ def delete_report(id_report):
         
         
 @mod.route('/reports/delete_image/<int:id_image>', methods=['DELETE'])
+@jwt_required()
 def delete_report_image(id_image):
     try:
         result = query(SQL_STRINGS.GET_REPORT_IMAGE_BY_ID, {'id_image': id_image}, True)
@@ -315,6 +319,7 @@ def delete_report_image(id_image):
         
         
 @mod.route('/reports/add_image/<int:id_report>', methods=['POST'])
+@jwt_required()
 def add_report_image(id_report):
     try:
         result = query(SQL_STRINGS.GET_REPORT_BY_ID, {'id_report': id_report}, True)
@@ -352,6 +357,7 @@ def add_report_image(id_report):
         
 
 @mod.route('/reports/toggle_confirm/<int:id_report>', methods=['POST'])
+@jwt_required()
 def toggle_confirm(id_report):
     try:
         data = request.get_json()
@@ -423,6 +429,7 @@ def toggle_confirm(id_report):
 
 
 @mod.route('/reports/toggle_fix_confirm/<int:id_report>', methods=['POST'])
+@jwt_required()
 def toggle_fix_confirm(id_report):
     try:
         data = request.get_json()

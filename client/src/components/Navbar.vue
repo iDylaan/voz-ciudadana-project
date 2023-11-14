@@ -28,6 +28,7 @@ const userBannerStyle = computed(() => {
 
 onMounted(() => {
     authed.value = !tokenExpired(token.value);
+    console.log(authed.value);
     M.AutoInit();
 
     // Reset menuActive

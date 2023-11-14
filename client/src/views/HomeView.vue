@@ -1,14 +1,19 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import Header from '@/components/Header.vue';
+import ProfileThemeEditor from '@/components/ProfileThemeEditor.vue';
 import { tokenExpired } from "@/utils/misc.js";
 
 const token = localStorage.getItem('token') ? localStorage.getItem('token') : '';
 
 const authed = ref(!tokenExpired(token));
 
-onMounted(() => {
+const firstAccess = ref(false);
+
+onMounted(async () => {
   document.title = 'VC | Home';
+
+  
 });
 
 
@@ -17,6 +22,7 @@ onMounted(() => {
 
 <template>
   <Header />
+  <ProfileThemeEditor first-access="" />
   <main>
     <h1>Bienvenidos</h1>
     <img src="../assets/img/Logo Voz Ciudadana.svg" alt="" width="170" height="170">
