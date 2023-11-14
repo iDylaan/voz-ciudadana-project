@@ -30,7 +30,7 @@ def create_app():
     "pool_recycle": 3600,
   }
 
-  app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://admin:V0z_C1ud4dan4_701*@voz-ciudadana.cuhuub668g0y.us-east-2.rds.amazonaws.com:3306/VOZ_CIUDADANA_DB"
+  app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://AUTH_API_USER:auth_api_user_pass2023*@voz-ciudadana.cuhuub668g0y.us-east-2.rds.amazonaws.com:3306/VOZ_CIUDADANA_DB"
 
   db.init_app(app)
 

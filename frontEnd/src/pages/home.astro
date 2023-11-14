@@ -1,0 +1,26 @@
+---
+    
+---
+
+<script >
+
+    import { $User, updateUser } from "@/store/auth/authStore"
+    import { jwtDecode } from "jwt-decode"
+    
+    const token = localStorage.getItem('token')
+
+    if (!token) {
+        Astro.redirect('/login')
+    }
+
+    const {nombre:username , email} = jwtDecode(token).sub
+
+    updateUser({username, email})
+    console.log($User.get());
+</script>
+
+<div>
+</div>
+
+<style>
+</style>
