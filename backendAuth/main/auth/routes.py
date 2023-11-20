@@ -25,13 +25,13 @@ def login():
       return data, 200
     else:
       return {
-        'messgae': 'Usuario o Contraseña incorrecta',
+        'message': 'Usuario o Contraseña incorrecta',
         "status": "error"
       }, 400
   except:
     db.session.rollback()
     return {
-        'messgae': 'Error al iniciar sesion',
+        'message': 'Error al iniciar sesion',
         "status": "error"
       }, 400
   finally:
@@ -54,7 +54,7 @@ def register():
     except:
       db.session.rollback()
       return {
-        'messgae': 'Error al iniciar sesion',
+        'message': 'Error al iniciar sesion',
         "status": "error"
       }, 400
     finally:

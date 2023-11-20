@@ -36,6 +36,10 @@ def create_app():
 
   # importa el init de resources
 
+  import main.controllers as controllers
+
+  api.add_resource(controllers.UsuarioController, '/update-first-access/<id>')
+
   # inicializa la api en app principal
   api.init_app(app)
 

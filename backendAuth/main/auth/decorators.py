@@ -21,7 +21,10 @@ def user_identity_lookup(usuario):
     'email': usuario.email,
     'nombre': usuario.username,
     'is_admin': usuario.is_admin,
-    'is_active': usuario.is_active
+    'is_active': usuario.is_active,
+    'profile_picture': usuario.profile_picture,
+    'profile_banner': usuario.profile_banner,
+    'first_access': usuario.first_access
   }
 
 @jwt.additional_claims_loader
@@ -30,5 +33,8 @@ def add_claims_to_access_token(usuario):
     'email': usuario.email,
     'nombre': usuario.username,
     'is_admin': usuario.is_admin,
-    'is_active': usuario.is_active
+    'is_active': usuario.is_active,
+    'profile_picture': usuario.profile_picture,
+    'profile_banner': usuario.profile_banner,
+    'first_access': usuario.first_access
   }

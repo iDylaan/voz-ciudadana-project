@@ -6,7 +6,7 @@ const initialUser = {
     username: ''
 }
 
-const errors = []
+const errors = null
 const isLoading = false
 
 export const $User = atom(initialUser)
@@ -18,11 +18,11 @@ export const isLoadingToggle = () =>{
 }
 
 export const updateErrors = (error) =>{
-    $ErrorsUser.set([...$ErrorsUser.get(), error])
+    $ErrorsUser.set(error)
 }
 
 export const cleanErrors = () =>{
-    $ErrorsUser.set([])
+    $ErrorsUser.set(null)
 }
 
 export const updateUser = (user) =>{
@@ -54,10 +54,13 @@ export const userLogin = (user) =>{
             cleanErrors()
             
         } catch (error) {
-            updateErrors(error.response.data.messgae)
+            updateErrors(error.response.data.message)
 
         }finally{
             isLoadingToggle()
+            setTimeout(() => {
+                cleanErrors()
+            }, 2000);
         }
 
     })

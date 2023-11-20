@@ -4,6 +4,10 @@ import { useForm  } from "react-hook-form"
 import { $ErrorsUser, $IsLoadingsUser, userLogin } from '@/store/auth/authStore'
 import { useStore } from '@nanostores/react'
 
+import { useEffect } from 'react'
+import { useMessage } from '@/react/hooks/useMessage'
+
+
 const data = {
     email:'',
     password:''
@@ -11,14 +15,20 @@ const data = {
 
 export const Login = () => {
 
-
     const {register, handleSubmit, formState:{errors} } = useForm(data)
     const error = useStore($ErrorsUser)
     const isLoading = useStore($IsLoadingsUser)
+    const { errorMessage } = useMessage(error)
 
     const onSubmit = (data) => {
         userLogin(data)
     };
+
+    useEffect(() => {
+
+        errorMessage()
+        
+    }, [error]);
 
   return (
     <>
@@ -48,13 +58,6 @@ export const Login = () => {
                 errors.password && 
                 <p>{errors.password.message}</p>
             }
-            {
-                error.length > 0 && (
-                    error.map(el => 
-                    <p key={el}>{el}</p>
-                    )
-                )
-            }
 
             <input type="submit" value="Iniciar Sesion" disabled={isLoading ? true : false} />
 
@@ -63,3 +66,4 @@ export const Login = () => {
     </>
   )
 }
+

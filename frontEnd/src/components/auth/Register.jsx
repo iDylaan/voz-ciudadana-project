@@ -4,17 +4,26 @@ import logo from '../../assets/img/logo.svg'
 import { useForm  } from "react-hook-form"
 import { useStore } from '@nanostores/react'
 import { $ErrorsUser, $IsLoadingsUser, userRegister } from '../../store/auth/authStore'
+import { useEffect } from 'react'
+import { useMessage } from '@/react/hooks/useMessage'
 
 export const Register = () => {
 
   const {register, handleSubmit, formState:{errors}, getValues } = useForm()
   const error = useStore($ErrorsUser)
   const isLoading = useStore($IsLoadingsUser)
+  const { errorMessage } = useMessage(error)
 
   const onSubmit = (data) => {
       userRegister(data)
   };
 
+    useEffect(() => {
+
+        errorMessage()
+    
+    }, [error]);
+    
   return (
     <>
     <img src={logo.src} width="100" height="100" />
@@ -74,15 +83,6 @@ export const Register = () => {
         {
           errors.password2 && 
           <p>{errors.password2.message}</p>
-        }
-
-
-        {
-            error.length > 0 && (
-                error.map(el => 
-                <p key={el}>{el}</p>
-                )
-            )
         }
 
         <input type="submit" value="Iniciar Sesion" disabled={isLoading ? true : false} />
