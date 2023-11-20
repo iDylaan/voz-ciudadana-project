@@ -30,3 +30,12 @@ export function setError(state, error) {
 export function cleanError(state) {
     if (state.error !== '') state.error = '';
 }
+export function setThemePorfile(state, payload) {
+    state.user.bannerProfile = payload.banner;
+    state.user.picProfile = payload.pic;
+    state.user.firstAccess = false;
+
+    localStorage.setItem('first_access', false);
+    localStorage.setItem('banner_profile', payload.banner);
+    localStorage.setItem('pic_profile', payload.pic);
+}

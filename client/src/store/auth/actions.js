@@ -62,3 +62,20 @@ export async function logout({ commit }) {
     localStorage.removeItem('banner_profile');
     commit('cleanUser');
 }
+export async function updateProfileTheme({ commit }, payload) {
+    try {
+        const reponse = await auth_api.post('/update_user_profile', {
+            jwt: payload.token,
+            user_id: payload.user_id,
+            profile_banner: payload.banner,
+            profile_pic: payload.pic
+        });
+
+        commit('setThemePorfile', {
+            banner: payload.banner,
+            pic: payload.pic
+        });
+    } catch (error) {
+        throw new Error(error);
+    }
+}

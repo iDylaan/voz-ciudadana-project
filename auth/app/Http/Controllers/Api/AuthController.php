@@ -98,7 +98,7 @@ class AuthController extends Controller
             'jwt' => 'required|string'
         ]);
 
-        // Manejo del caso de falla en la validación
+        // Manejo del caso de falla en la validación 
         if ($validator->fails()) {
             return response()->json($validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
         }

@@ -1,14 +1,16 @@
 <script setup>
 import { useStore } from 'vuex';
-import { useRouter } from 'vue-router';
-import { ref, onMounted, onBeforeUnmount, computed, reactive } from 'vue';
+import { useRouter, onBeforeRouteLeave } from 'vue-router';
+import { ref, onMounted, onBeforeUnmount, computed, reactive, watch } from 'vue';
 import { tokenExpired } from "@/utils/misc.js";
+import ProfileThemeEditor from "@/components/ProfileThemeEditor.vue";
 
 const router = useRouter();
 const store = useStore();
 const menuActive = ref(false);
 const token = ref(localStorage.getItem("token") ? localStorage.getItem("token") : '');
 const authed = ref(false);
+const isEditorVisible = ref(false);
 
 const userData = reactive({
     username: null,
@@ -18,6 +20,17 @@ const userData = reactive({
     bannerProfile: null,
 });
 
+const openProfileEditor = () => isEditorVisible.value = true;
+const closeProfileEditor = () => isEditorVisible.value = false;
+
+const closeSidenav = () => {
+    const instance = M.Sidenav.getInstance(document.querySelector('.sidenav'));
+    if (instance && instance.isOpen) {
+        instance.close();
+        menuActive.value = false;
+    }
+};
+
 const userImageSrc = computed(() => {
     return userData.picProfile !== null ? require(`@/assets/icon/profile-pictures/profilePic${userData.picProfile}.svg`) : '';
 });
@@ -26,24 +39,26 @@ const userBannerStyle = computed(() => {
     return userData.bannerProfile !== null ? `url(${require(`@/assets/img/profile-banners/banner${userData.bannerProfile}.svg`)})` : '';
 });
 
+// Watcher para reaccionar a los cambios de ruta
+watch(() => router.currentRoute.value, () => {
+    closeSidenav();
+});
+
+// Asegúrate de que se cierre el sidenav cuando la ruta cambia.
+onBeforeRouteLeave(() => {
+    closeSidenav();
+});
+
 onMounted(() => {
     authed.value = !tokenExpired(token.value);
-    console.log(authed.value);
     M.AutoInit();
 
-    // Reset menuActive
-    M.Sidenav.getInstance(document.querySelector('.sidenav')).close();
-
-    // Añade el listener después de que el componente y Materialize estén inicializados
-    document.addEventListener('click', (e) => {
-        // Comprueba si el clic fue en el sidenav-overlay
-        if (e.target.classList.contains('sidenav-overlay')) {
-            handleOverlayClick();
-        } else if (e.target.classList.contains('sidenav-close')) {
-            toggleMenu();
-        }
+    // Inicializar el sidenav de Materialize
+    M.Sidenav.init(document.querySelector('.sidenav'), {
+        onCloseEnd: () => {
+            menuActive.value = false;
+        },
     });
-
 
     userData.username = store.state.auth.user.username || localStorage.getItem('username');
     userData.email = store.state.auth.user.email || localStorage.getItem('email');
@@ -53,16 +68,12 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-    // Elimina el listener para prevenir fugas de memoria
-    document.removeEventListener('click', (e) => {
-        if (e.target.classList.contains('sidenav-overlay')) {
-            handleOverlayClick();
-        } else if (e.target.classList.contains('sidenav-close')) {
-            toggleMenu();
-        }
-    });
+    // Destruye la instancia de Sidenav para limpiar event listeners que agrega Materialize internamente.
+    const instance = M.Sidenav.getInstance(document.querySelector('.sidenav'));
+    if (instance) {
+        instance.destroy();
+    }
 });
-
 
 const toggleMenu = () => {
     menuActive.value = !menuActive.value;
@@ -70,25 +81,21 @@ const toggleMenu = () => {
     if (menuActive.value) {
         M.Sidenav.getInstance(document.querySelector('.sidenav')).open();
     } else {
-        M.Sidenav.getInstance(document.querySelector('.sidenav')).close();
+        closeSidenav();
     }
-};
-
-const handleOverlayClick = () => {
-    menuActive.value = false;
 };
 
 const logout = () => {
     store.dispatch('auth/logout');
     authed.value = false;
+    router.push('/login');
 };
 </script>
 
-
-
-
 <template>
     <div class="vc-navbar">
+        <ProfileThemeEditor :show="isEditorVisible" @update:show="isEditorVisible = $event" />
+
         <ul id="slide-out" class="sidenav">
             <li v-if="authed">
                 <div class="user-view">
@@ -101,29 +108,31 @@ const logout = () => {
                 </div>
             </li>
 
-            <li><router-link class="waves-effect sidenav-close" to="/"><i
+            <li><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/"><i
                         class="material-icons">home</i>Inicio</router-link></li>
-            <li><router-link class="waves-effect sidenav-close" to="/"><i
+            <li><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/reports"><i
                         class="material-icons">reports</i>Reportes</router-link></li>
-            <li><router-link class="waves-effect sidenav-close" to="/"><i class="material-icons">map</i>Mapa de
+            <li><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/map-reports"><i class="material-icons">map</i>Mapa de
                     reportes</router-link></li>
-            <li v-if="authed"><router-link class="waves-effect sidenav-close" to="/"><i
+            <li v-if="authed"><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/"><i
                         class="material-icons">dashboard</i>Dashboard</router-link></li>
             <li v-if="authed">
                 <div class="divider"></div>
             </li>
-            <li v-if="authed"><router-link class="waves-effect sidenav-close" to="/"><i
+            <li v-if="authed"><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/new-report"><i
                         class="material-icons">format_list_bulleted_add</i>Nuevo
                     reporte</router-link></li>
-            <li v-if="authed"><router-link class="waves-effect sidenav-close" to="/"><i
+            <li v-if="authed"><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/"><i
                         class="material-icons">list_alt</i>Mis
                     reportes</router-link></li>
             <li>
                 <div class="divider"></div>
             </li>
-            <li v-if="!authed"><router-link class="waves-effect sidenav-close" to="/login"><i
+            <li v-if="!authed"><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/login"><i
                         class="material-icons">login</i>Iniciar
                     Sesión</router-link></li>
+            <li v-if="authed"><a class="waves-effect sidenav-close" @click="openProfileEditor"><i
+                        class="material-icons">edit</i>Editar Perfil</a></li>
             <li v-if="authed"><a class="waves-effect sidenav-close" @click="logout"><i
                         class="material-icons">logout</i>Cerrar Sesión</a></li>
         </ul>

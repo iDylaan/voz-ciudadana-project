@@ -22,7 +22,7 @@ onMounted(async () => {
 
 <template>
   <Header />
-  <ProfileThemeEditor first-access="" />
+  <ProfileThemeEditor />
   <main>
     <h1>Bienvenidos</h1>
     <img src="../assets/img/Logo Voz Ciudadana.svg" alt="" width="170" height="170">

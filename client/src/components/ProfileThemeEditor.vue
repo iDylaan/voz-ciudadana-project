@@ -1,12 +1,24 @@
 <script setup>
-import { ref, onMounted, reactive } from "vue";
+import { ref, watch, defineProps, defineEmits, reactive, onMounted } from "vue";
 import { useStore } from "vuex";
 
-const showEditor = ref(false);
+const props = defineProps({
+    "show": {
+        type: Boolean,
+        required: false,
+        default: false
+    }
+});
+const emit = defineEmits(['update:show']);
+const showEditor = ref(props.show);
 const profilePics = reactive({});
 const store = useStore();
 const step = ref(0);
 const userData = reactive({});
+
+watch(() => props.show, (newValue) => {
+    showEditor.value = newValue;
+});
 
 onMounted(() => {
     profilePics.pic = '';
@@ -17,7 +29,7 @@ onMounted(() => {
     userData.email = store.state.auth.user.email || localStorage.getItem('email');
 
     setTimeout(() => {
-        const firstAccess = store.state.auth.user.firstAccess || localStorage.getItem('first_access');
+        const firstAccess = Boolean(store.state.auth.user.firstAccess || localStorage.getItem('first_access') === 'true');
         const picProfile = store.state.auth.user.picProfile || localStorage.getItem('pic-profile');
         const bannerProfile = store.state.auth.user.bannerProfile || localStorage.getItem('banner-profile');
         showEditor.value = firstAccess;
@@ -32,15 +44,31 @@ const setPicStep = () => step.value = 1;
 const setBannerStep = () => step.value = 2;
 const handleBanner = (banner) => profilePics.banner = banner;
 
+const closeEditor = () => {
+    showEditor.value = false;
+    emit('update:show', false);
+};
+
+const updateProfileValues = async () => {
+    profilePics.user_id = store.state.auth.user.id || localStorage.getItem('userID');
+    profilePics.token = localStorage.getItem('token');
+    console.log(profilePics);
+    try {
+        await store.dispatch('auth/updateProfileTheme', profilePics);
+        showEditor.value = false;
+    } catch (error) {
+        console.log(error);
+    }
+};
 </script>
 
 <template>
-    <div v-if="showEditor" class="profile-theme-editor">
+    <div v-if="showEditor || show" class="profile-theme-editor">
         <span class="bg-toggler"></span>
 
         <div class="container">
             <div class="window-option__container" id="main-top">
-                <button class="close-button">
+                <button class="close-button" @click="closeEditor">
                     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                         width="512" height="512" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512"
                         xml:space="preserve" class="">
@@ -74,11 +102,6 @@ const handleBanner = (banner) => profilePics.banner = banner;
             <!-- Banner Profile -->
             <div class="banner-profile-tab" v-show="step === 2" id="banner-profile__container">
 
-                <!-- Floating Button -->
-                <a class="btn-floating btn-large blue go-to-top-floating-button" href="#banner-profile__container" id="scrollToTopButton">
-                    <i class="large material-icons">arrow_upward</i>
-                </a>
-
                 <div class="user-view">
                     <div class="background"
                         :style="{ backgroundImage: `url(${require('@/assets/img/profile-banners/banner' + (profilePics.banner > 0 ? profilePics.banner : 1) + '.svg')}` }">
@@ -100,7 +123,7 @@ const handleBanner = (banner) => profilePics.banner = banner;
                 <div class="pics-buttons" id="#pic-next">
                     <a class="waves-effect waves-light btn-flat grey darken-1" style="color: white;"
                         @click="setPicStep">Regresar</a>
-                    <a class="waves-effect waves-light btn light-green"
+                    <a class="waves-effect waves-light btn light-green" @click="updateProfileValues"
                         :class="{ 'disabled': profilePics.banner <= 0 }">Terminar</a>
                 </div>
             </div>
@@ -388,9 +411,7 @@ const handleBanner = (banner) => profilePics.banner = banner;
 }
 
 
-@media (width < 700px) {
-
-}
+@media (width < 700px) {}
 
 @media (width < 700px) {
     .profile-theme-editor {

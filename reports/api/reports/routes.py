@@ -72,6 +72,64 @@ def get_reports():
             return handle_error({'description': "Error inesperado en el servidor", 'code': 500}), 500
 
 
+@mod.route('/user_reports/<int:id_user>', methods=['GET'])
+@jwt_required()
+def get_user_reports(id_user):
+    try:
+        print(id_user)
+        result_user = query(SQL_STRINGS.GET_USER_BY_ID, {'id_user': id_user}, True)
+        if result_user["status"] == "NOT_FOUND":
+            return handle_error({'description': 'No se encontró el usuario con id {}'.format(id_user),'code': 404}), 404
+        elif result_user["status"]!= "OK":
+            return handle_error({'description': 'No se pudo obtener el usuario con id {}'.format(id_user),'code': 500}), 500
+        
+        result = query(SQL_STRINGS.GET_USER_REPORTS, {'id_user': id_user})
+        if result["status"] == "NOT_FOUND":
+            return jsonify({"success": True, "data": []}), 200
+        elif result["status"]!= "OK":
+            return handle_error({'description': 'No se pudo obtener los reportes para el usuario con id {}'.format(id_user),'code': 500}), 500
+        
+        reports_dict = [dict(row) for row in result["data"]]
+        result_reports = []
+        for report in reports_dict:
+            result_report = {}
+            result_report["id"] = report["id"]
+            result_report["title"] = report["report_title"]
+            result_report["description"] = report["report_description"]
+            result_report["category"] = {
+                "id": report["category_id"],
+                "category_name": report["category_name"]
+            }
+            result_report["status"] = {
+                "id": report["status_id"],
+                "status_name": report["status_name"]
+            }
+            result_report["created_at"] = report["creation_dt"]
+            result_report["last_update"] = report["last_updated_dt"]
+            result_report["user"] = {
+                "id": report["user_id"],
+                "username": report["username"]
+            } 
+            result_report["coords"] = get_dict_coords(report["coords"])
+            result_report["images"] = []
+            if report["images"]:
+                images_dict = [json.loads(segment) for segment in str(report["images"]).split('|')]
+                for image in images_dict:
+                    if image["id"] is not None and image["image"] is not None:
+                        result_report["images"].append(image)
+            result_reports.append(result_report)
+        return jsonify({
+            'status': result["status"],
+            'data': result_reports
+        }), 200
+    except Exception as e:
+        print("Ha ocurrido un error en @get_user_reports/: {} en la linea {}".format(e, e.__traceback__.tb_lineno))
+        try:
+            e = str(e)
+            return handle_error({'description': e[e.find(':')+2:], 'code': int(e[:3])}), int(e[:3])
+        except Exception as e:
+            return handle_error({'description': "Error inesperado en el servidor", 'code': 500}), 500
+
 
 @mod.route('/reports/<int:id_report>', methods=['GET'])
 def get_report(id_report):

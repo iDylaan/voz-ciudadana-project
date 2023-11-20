@@ -43,6 +43,28 @@ class Sql_Strings():
         "AND u.is_active = 1 "
         "GROUP BY r.id"
     )
+
+    GET_USER_REPORTS = (
+        "SELECT "
+        "r.*, "
+        "rc.category_name, "
+        "rs.status_name, "
+        "u.username, "
+        "GROUP_CONCAT( "
+            "IFNULL( "
+                "JSON_OBJECT('id', ri.id, 'image', ri.image_url), "
+                "'' "
+            ") SEPARATOR '|' "
+        ") AS images "
+        "FROM REPORTS r "
+        "LEFT JOIN REPORT_IMAGES ri ON r.id = ri.report_id AND ri.is_active = 1 "
+        "LEFT JOIN REPORT_CATEGORIES rc ON r.category_id = rc.id "
+        "LEFT JOIN REPORT_STATUS rs ON r.status_id = rs.id "
+        "LEFT JOIN USERS u ON r.user_id = u.id "
+        "WHERE r.user_id = %(id_user)s "
+        "AND u.is_active = 1 "
+        "GROUP BY r.id"
+    )
     
     INSERT_REPORT = (
         "INSERT INTO REPORTS "

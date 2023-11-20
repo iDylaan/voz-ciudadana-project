@@ -29,9 +29,9 @@ const publicRoutes = [
     component: () => import('../views/NotFound.vue')
   },
   {
-    path: '/reportes',
-    name: 'reportes',
-    component: () => import('../views/Reportes.vue')
+    path: '/reports',
+    name: 'reports',
+    component: () => import('../views/Reports.vue')
   },
   
 ]
@@ -47,7 +47,10 @@ const adminRoutes = [
 
 const userRoutes = [
   {
-
+    "path": "/new-report",
+    "name": "new-report",
+    "component": () => import("../views/NewReport.vue"),
+    "meta": { requiresAuth: true },
   }
 ]
 
@@ -79,11 +82,7 @@ router.beforeEach(async (to, from, next) => {
 
   if (isAuthenticated) {
     // Verificación de roles.
-    if (to.meta.adminRoutes && isAdmin) {
-      next({ path: '/not-allowed', hash: '' });
-      return;
-    }
-    if (to.meta.userRoutes && !isAdmin) {
+    if (to.meta.adminRoutes && !isAdmin) {
       next({ path: '/not-allowed', hash: '' });
       return;
     }
@@ -92,4 +91,4 @@ router.beforeEach(async (to, from, next) => {
   next();
 });
 
-export default router
+export default router;
