@@ -19,7 +19,11 @@ CORS(api) # TODO: Configurar para acceso al servidor del cliente
 ### API ROUTES ###
 from .utils.error_handler import errors as mod_error_handler
 from .reports.routes import mod as mod_reports
+from .categories.routes import mod as mod_categories
+from .users.routes import mod as mod_users
 
 ### BP ###
 api.register_blueprint(mod_error_handler)
 api.register_blueprint(mod_reports)
+api.register_blueprint(mod_categories)
+api.register_blueprint(mod_users)

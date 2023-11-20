@@ -132,7 +132,7 @@ const logout = () => {
                         class="material-icons">login</i>Iniciar
                     Sesión</router-link></li>
             <li v-if="authed"><a class="waves-effect sidenav-close" @click="openProfileEditor"><i
-                        class="material-icons">edit</i>Editar Perfil</a></li>
+                        class="material-icons">manage_accounts</i>Editar Perfil</a></li>
             <li v-if="authed"><a class="waves-effect sidenav-close" @click="logout"><i
                         class="material-icons">logout</i>Cerrar Sesión</a></li>
         </ul>

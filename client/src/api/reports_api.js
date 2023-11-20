@@ -10,17 +10,7 @@ export const reportApi = axios.create({
 export const privateReportApi = axios.create({
     baseURL: 'https://voz-ciudadana-reports.fly.dev',
     headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
     }
 })
-
-privateReportApi.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
-
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-}, (error) => {
-    return Promise.reject(error);
-});

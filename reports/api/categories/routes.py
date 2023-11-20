@@ -6,12 +6,12 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_cors import CORS
 from api.config.conf_mysql import query, sql
 
-mod = Blueprint('users', __name__)
-# CORS acces to "users"
+mod = Blueprint('categories', __name__)
+# CORS acces to "reports"
 CORS(mod)
 
 # CORS Configure Parameters
-@mod.route('/first_access_by_user_id', methods=['OPTIONS'])
+@mod.route('/categories', methods=['OPTIONS'])
 def handle_options():
     return "", 200, {
         "Access-Control-Allow-Origin": "*",
@@ -19,26 +19,24 @@ def handle_options():
         "Access-Control-Allow-Headers": "Content-Type, Authorization"
     }
     
-@mod.route('/first_access_by_user_id/<int:id_user>', methods=['GET'])
+# =========== ENDPOINTS ===========
+@mod.route('/categories', methods=['GET'])
 @jwt_required()
-def get_first_access(id_user):
+def get_categories():
     try:
-        if id_user is None:
-            return handle_error({'description': 'No se ha enviado el id del usuario','code': 400}), 400
-        
-        result = query(SQL_STRINGS.GET_FIRST_ACCESS_BY_USER_ID, {'id': id_user}, True)
+        result = query(SQL_STRINGS.GET_CATEGORIES)
         if result["status"] == "NOT_FOUND":
-            return handle_error({'description': 'No se encontró el usuario con id {}'.format(id_user),'code': 404}), 404
+            return handle_error({'description': 'No hay resultados de categorias','code': 404}), 404
         elif result["status"] != "OK":
-            return handle_error({'description': 'No se pudo obtener la información del usuario','code': 500}), 500
+            return handle_error({'description': 'No se pudo obtener los resultados de categorias','code': 500}), 500
         
-        print(result["data"])
+        categories_dict = [dict(row) for row in result["data"]]
         return jsonify({
             'status': result["status"],
-            'data': {"message": "Se agregó correctamente la imagen", "report_image_details": result["data"]}
+            'data': categories_dict
         }), 200
     except Exception as e:
-        print("Ha ocurrido un error en @first_access_by_user_id/<int:id_user>: {} en la linea {}".format(e, e.__traceback__.tb_lineno))
+        print("Ha ocurrido un error en @get_categories/: {} en la linea {}".format(e, e.__traceback__.tb_lineno))
         try:
             e = str(e)
             return handle_error({'description': e[e.find(':')+2:], 'code': int(e[:3])}), int(e[:3])
