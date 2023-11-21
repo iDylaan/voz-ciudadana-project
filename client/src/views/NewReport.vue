@@ -1,7 +1,7 @@
 <script setup>
 // Importaciones
-import { useLoadScript, GoogleMap, Marker } from 'vue3-google-map';
-import { ref, onMounted, reactive, nextTick, watch } from "vue";
+import { GoogleMap, Marker } from 'vue3-google-map';
+import { ref, onMounted, reactive, nextTick, watch, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import Swal from 'sweetalert2';
@@ -11,6 +11,21 @@ import Header from "@/components/Header.vue";
 import ReportIcon from "@/components/ReportIcon.vue";
 
 // Variables
+const MIN_LENGTH = 3;
+const isLoadingPage = ref(true);
+const isFormValid = computed(() => {
+    return (
+        isTitleValid.value &&
+        isDescriptionValid.value &&
+        isCategorySelected.value &&
+        isLocationSelected.value &&
+        ((showImageInput.value && selectedFiles.value.length > 0) || !showImageInput.value)
+    );
+});
+const isTitleValid = computed(() => isNotEmpty(newReport.title) && isLongEnough(newReport.title) && containsNonDigitCharacters(newReport.title));
+const isDescriptionValid = computed(() => isNotEmpty(newReport.description) && isLongEnough(newReport.description) && containsNonDigitCharacters(newReport.description));
+const isCategorySelected = computed(() => newReport.category_id > 0);
+const isLocationSelected = computed(() => locationConfirmed.value);
 const reportCategories = ref([]);
 const store = useStore();
 const router = useRouter();
@@ -27,8 +42,37 @@ const newReport = reactive({
 // Configuración de la API Key de Google Maps
 const center = ref({ lat: -34.397, lng: 150.644 });
 const isMapLoaded = ref(false);
+const locationConfirmed = ref(false);
+// Configuracion multimedia
+const showImageInput = ref(false);
+const selectedFiles = ref([]);
+function handleFiles(event) {
+    // Limita la cantidad de archivos a 5
+    selectedFiles.value = Array.from(event.target.files).slice(0, 5);
+}
+
+async function uploadImages() {
+    if (selectedFiles.value.length > 0) {
+        const formData = new FormData();
+        selectedFiles.value.forEach(file => {
+            formData.append('file', file);
+            formData.append('upload_preset', 'ml_default');
+        });
+        try {
+            const response = await fetch('https://api.cloudinary.com/v1_1/dwwer682m/image/upload', {
+                method: 'POST',
+                body: formData,
+            });
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Error al subir imagen:', error);
+        }
+    }
+}
 
 onMounted(async () => {
+    isLoadingPage.value = true;
     isMapLoaded.value = false;
     await getReportCategories();
 
@@ -52,7 +96,14 @@ onMounted(async () => {
             () => { },
             { enableHighAccuracy: true }
         );
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'El navegador no soporta la geolocalización.'
+        });
     }
+    isLoadingPage.value = false;
 });
 
 // Observa cambios en reportCategories y actualiza el componente de selección de Materialize
@@ -82,7 +133,9 @@ function capitalize(str) {
 
 
 function updateMarker(event) {
-    newReport.coords = event.latLng.toJSON();
+    if (!locationConfirmed.value) {
+        newReport.coords = event.latLng.toJSON();
+    }
 }
 
 function updateMarkerPosition(event) {
@@ -90,9 +143,17 @@ function updateMarkerPosition(event) {
 }
 
 function confirmLocation() {
-    // Aquí puedes manejar las coordenadas seleccionadas
+    locationConfirmed.value = true;
     console.log('Coordenadas seleccionadas:', newReport.coords);
 }
+
+const editLocation = () => locationConfirmed.value = false;
+
+const showImageInputHandler = () => showImageInput.value = showImageInput.value = true;
+const hideImageInputHandler = () => showImageInput.value = showImageInput.value = false;
+const isNotEmpty = (str) => str.trim().length > 0;
+const isLongEnough = (str) => str.trim().length >= MIN_LENGTH;
+const containsNonDigitCharacters = (str) => /\D/.test(str);
 </script>
 
 <template>
@@ -100,8 +161,24 @@ function confirmLocation() {
     <main class="container">
         <h1 class="center-align">Nuevo Reporte ⚠️</h1>
 
-        <div class="row">
-            <form @submit.prevent="submitReport" class="col s12">
+        <div v-show="isLoadingPage" class="row loader__container">
+            <div class="preloader-wrapper big active">
+                <div class="spinner-layer spinner-blue-only">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div v-show="!isLoadingPage" class="row">
+            <div class="col s12">
                 <div class="input-field col s12">
                     <input id="report_title" type="text" v-model="newReport.title" required>
                     <label for="report_title">Título del Reporte</label>
@@ -127,23 +204,46 @@ function confirmLocation() {
 
                 <!-- Goole Map -->
                 <div v-if="isMapLoaded" class="map-container">
+                    <label>Selecciona la ubicación de la incidencia</label>
                     <GoogleMap api-key="AIzaSyAXnAAtV9TCNDfvl9tMx3iwCJC8MCECMCQ" style="width: 100%; height: 500px"
                         :center="center" :zoom="19" @click="updateMarker" :streetViewControl="false" :mapTypeControl="false"
                         :fullscreenControl="false">
-                        <Marker :options="{ position: newReport.coords, draggable: true }"
+                        <Marker :options="{ position: newReport.coords, draggable: !locationConfirmed }"
                             @dragend="updateMarkerPosition" />
                     </GoogleMap>
                     <div class="button__container">
-                        <button @click="confirmLocation"
+                        <button v-show="!locationConfirmed" @click="confirmLocation"
                             class="confirm-position__button btn waves-effect waves-light blue-grey darken-2">Confirmar
+                            Ubicación</button>
+                        <button v-show="locationConfirmed" @click="editLocation"
+                            class="confirm-position__button btn waves-effect waves-light blue-grey darken-2">Editar
                             Ubicación</button>
                     </div>
                 </div>
 
-                <div class="col s12">
-                    <button type="submit" class="btn waves-effect waves-light blue">Enviar Reporte</button>
+                <!-- Imagen y videos -->
+                <div class="multimedia__container">
+                    <div class="shower__container" v-show="!showImageInput">
+                        <label for="show-multimedia">¿Tienes fotografías para evidenciar la incidencia? (opcional)</label>
+                        <a class="waves-effect waves-light btn-small blue-grey" @click="showImageInputHandler"><i
+                                class="material-icons right">drive_folder_upload</i>Subir Evidencia</a>
+                    </div>
+
+                    <div class="multimedia-form__container" v-show="showImageInput">
+                        <form @submit.prevent="uploadImages">
+                            <input type="file" accept="image/*" multiple @change="handleFiles" ref="fileInput">
+                            <button type="submit" class="btn waves-effect waves-light" :class="{'disabled': selectedFiles.length === 0}">Subir Imágenes</button>
+                        </form>
+                    </div>
+
                 </div>
-            </form>
+
+                <div class="col s12 submit-report__button">
+                    <button type="submit" class="btn waves-effect waves-light blue"
+                        :class="{ 'disabled': !isFormValid }">Enviar Reporte <i
+                            class="material-icons right">send</i></button>
+                </div>
+            </div>
         </div>
     </main>
 </template>
@@ -155,6 +255,10 @@ main {
     padding: 2rem 0;
     background-color: #fcfcfc;
     width: 100%;
+
+    h1 {
+        font-size: 2.5rem;
+    }
 
     .form {
         margin-top: 2rem;
@@ -174,10 +278,21 @@ main {
     }
 }
 
+.shower__container {
+    display: flex;
+    flex-direction: column;
+}
+
 .option-content {
     display: flex;
     align-items: center;
     gap: 20px;
+}
+
+.loader__container {
+    display: grid;
+    place-content: center;
+    width: 100vw;
 }
 
 .map-container {
@@ -185,6 +300,10 @@ main {
     margin-bottom: 50px;
     height: 500px;
     position: relative;
+
+    label {
+        font-size: 1rem;
+    }
 
     .button__container {
         position: absolute;
@@ -194,14 +313,17 @@ main {
         justify-content: center;
 
         .confirm-position__button {
-            width: calc(100% - 150px);
+            width: 70%;
         }
+    }
+}
 
-        @media (screen < 450px) {
-            .confirm-position__button {
-                width: calc(100% - 50px);
-            }
-        }
+.submit-report__button {
+    width: 100%;
+    margin-top: 20px;
+
+    button {
+        width: 100%;
     }
 }
 </style>
