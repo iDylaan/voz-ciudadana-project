@@ -128,14 +128,20 @@ function confirmLocation() {
                 <!-- Goole Map -->
                 <div v-if="isMapLoaded" class="map-container">
                     <GoogleMap api-key="AIzaSyAXnAAtV9TCNDfvl9tMx3iwCJC8MCECMCQ" style="width: 100%; height: 500px"
-                        :center="center" :zoom="15" @click="updateMarker">
-                        <Marker :options="{ position: markerPosition, draggable: true }" @dragend="updateMarkerPosition" />
+                        :center="center" :zoom="19" @click="updateMarker" :streetViewControl="false" :mapTypeControl="false"
+                        :fullscreenControl="false">
+                        <Marker :options="{ position: newReport.coords, draggable: true }"
+                            @dragend="updateMarkerPosition" />
                     </GoogleMap>
-                    <button @click="confirmLocation">Confirmar Ubicación</button>
+                    <div class="button__container">
+                        <button @click="confirmLocation"
+                            class="confirm-position__button btn waves-effect waves-light blue-grey darken-2">Confirmar
+                            Ubicación</button>
+                    </div>
                 </div>
 
                 <div class="col s12">
-                    <button type="submit" class="btn waves-effect waves-light">Enviar Reporte</button>
+                    <button type="submit" class="btn waves-effect waves-light blue">Enviar Reporte</button>
                 </div>
             </form>
         </div>
@@ -175,6 +181,27 @@ main {
 }
 
 .map-container {
-    height: 300px;
+    margin-top: 280px;
+    margin-bottom: 50px;
+    height: 500px;
+    position: relative;
+
+    .button__container {
+        position: absolute;
+        bottom: 30px;
+        width: calc(100% - 50px);
+        display: flex;
+        justify-content: center;
+
+        .confirm-position__button {
+            width: calc(100% - 150px);
+        }
+
+        @media (screen < 450px) {
+            .confirm-position__button {
+                width: calc(100% - 50px);
+            }
+        }
+    }
 }
 </style>
