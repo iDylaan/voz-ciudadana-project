@@ -1,7 +1,7 @@
 <script setup>
 // Imports
 import { GoogleMap, Marker } from 'vue3-google-map';
-import { ref, watch, onMounted, nextTick, reactive } from 'vue';
+import { ref, watch, onMounted, nextTick, reactive, computed } from 'vue';
 
 // Variables
 const props = defineProps({
@@ -14,10 +14,14 @@ const mapOptions = reactive({
     zoom: 17
 });
 const customIcon = ref(null);
+const reportHelperVoted = ref(false);
+const reportFixedVoted = ref(false);
 
 // Funciones
 onMounted(async () => {
     initializeCarousel();
+    var elems = document.querySelectorAll('.tooltipped');
+    var instances = M.Tooltip.init(elems, { position: "top", inDuration: 250, outDuration: 175, enterDelay: 50, exitDelay: 50 });
 });
 
 watch(() => props.showModal, (newVal) => {
@@ -32,7 +36,7 @@ watch(() => props.reportDetails.images, () => {
 
 watch(() => props.reportDetails, (newVal) => {
     customIcon.value = {
-        url: '@/assets/icon/categoriesIcons.svg',
+        url: '@/assets/icon/categoriesIcons/no-icon.svg',
     };
     if (newVal && newVal.coords) {
         let lat = parseFloat(newVal.coords.lat);
@@ -97,6 +101,21 @@ const initializeCarousel = () => {
                             <Marker :options="{ position: mapOptions.center, draggable: false }" :icon="customIcon" />
                         </GoogleMap>
                     </div>
+
+                    <div class="options">
+                        <button class="btn tooltipped waves-effect"
+                            :style="{ backgroundColor: !reportHelperVoted ? 'white' : '#4cb5ab', color: !reportHelperVoted ? 'black' : 'white' }"
+                            :class="{ 'waves-light': reportHelperVoted, 'waves-red': !reportHelperVoted }"
+                            data-position="top"
+                            :data-tooltip="!reportHelperVoted ? 'Apoyando el reporte 🙌' : 'Dejando de apoyar'"><i
+                                class="material-icons">volunteer_activism</i></button>
+                        <button class="btn tooltipped waves-effect"
+                            :style="{ backgroundColor: !reportFixedVoted ? 'white' : '#f77b72', color: !reportFixedVoted ? 'black' : 'white' }"
+                            :class="{ 'waves-light': reportFixedVoted, 'waves-teal': !reportFixedVoted }"
+                            data-position="top"
+                            :data-tooltip="!reportFixedVoted ? 'Reporte atendido 👍' : 'Sigue sin atender'"><i
+                                class="material-icons">construction</i></button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -104,6 +123,19 @@ const initializeCarousel = () => {
 </template>
 
 <style lang="scss" scoped>
+.options {
+    margin: 30px 0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: 0.2s ease-in-out;
+
+    button {
+        width: 100%;
+    }
+}
+
+
 .modal-overlay {
     position: fixed;
     inset: 0;
