@@ -59,6 +59,13 @@ const initializeCarousel = () => {
         });
     });
 };
+
+const toggleReportHelperVoted = () => {
+    reportHelperVoted.value = !reportHelperVoted.value;
+};
+const toggleReportFixedVoted = () => {
+    reportFixedVoted.value =!reportFixedVoted.value;
+};
 </script>
 
 <template>
@@ -103,13 +110,13 @@ const initializeCarousel = () => {
                     </div>
 
                     <div class="options">
-                        <button class="btn tooltipped waves-effect"
+                        <button class="btn tooltipped waves-effect" @click="toggleReportHelperVoted"
                             :style="{ backgroundColor: !reportHelperVoted ? 'white' : '#4cb5ab', color: !reportHelperVoted ? 'black' : 'white' }"
                             :class="{ 'waves-light': reportHelperVoted, 'waves-red': !reportHelperVoted }"
                             data-position="top"
                             :data-tooltip="!reportHelperVoted ? 'Apoyando el reporte 🙌' : 'Dejando de apoyar'"><i
                                 class="material-icons">volunteer_activism</i></button>
-                        <button class="btn tooltipped waves-effect"
+                        <button class="btn tooltipped waves-effect" @click="toggleReportFixedVoted"
                             :style="{ backgroundColor: !reportFixedVoted ? 'white' : '#f77b72', color: !reportFixedVoted ? 'black' : 'white' }"
                             :class="{ 'waves-light': reportFixedVoted, 'waves-teal': !reportFixedVoted }"
                             data-position="top"
