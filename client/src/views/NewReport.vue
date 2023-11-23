@@ -1,6 +1,6 @@
 <script setup>
 // Importaciones
-import { GoogleMap, Marker } from 'vue3-google-map';
+import { GoogleMap, Marker } from 'vue3-google-map'; 
 import { ref, onMounted, reactive, nextTick, watch, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -37,7 +37,9 @@ const newReport = reactive({
     "coords": {
         "lat": -34.397,
         "lng": 150.644
-    }
+    },
+    "user_id": parseInt(store.state.auth.user.id) || parseInt(localStorage.getItem("userID")) || 0,
+    "status_id": 1
 });
 // Configuración de la API Key de Google Maps
 const center = ref({ lat: -34.397, lng: 150.644 });
@@ -46,30 +48,38 @@ const locationConfirmed = ref(false);
 // Configuracion multimedia
 const showImageInput = ref(false);
 const selectedFiles = ref([]);
-function handleFiles(event) {
-    // Limita la cantidad de archivos a 5
-    selectedFiles.value = Array.from(event.target.files).slice(0, 5);
-}
+const fileInput = ref(null);
+const isFormLoading = ref(false);
 
 async function uploadImages() {
-    if (selectedFiles.value.length > 0) {
-        const formData = new FormData();
-        selectedFiles.value.forEach(file => {
+    if (selectedFiles.value.length > 0 && showImageInput.value) {
+        const uploadPromises = selectedFiles.value.map(async file => {
+            const formData = new FormData();
             formData.append('file', file);
             formData.append('upload_preset', 'ml_default');
-        });
-        try {
+
             const response = await fetch('https://api.cloudinary.com/v1_1/dwwer682m/image/upload', {
                 method: 'POST',
                 body: formData,
             });
-            const data = await response.json();
-            console.log(data);
+            return await response.json();
+        });
+
+        try {
+            const responses = await Promise.all(uploadPromises);
+            responses.forEach(response => {
+                newReport.images.push(response.secure_url);
+            });
         } catch (error) {
-            console.error('Error al subir imagen:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'El al subir las imagenes: ' + error
+            });
         }
     }
 }
+
 
 onMounted(async () => {
     isLoadingPage.value = true;
@@ -104,6 +114,9 @@ onMounted(async () => {
         });
     }
     isLoadingPage.value = false;
+
+    // Variables necesarias para el reporte
+
 });
 
 // Observa cambios en reportCategories y actualiza el componente de selección de Materialize
@@ -144,7 +157,6 @@ function updateMarkerPosition(event) {
 
 function confirmLocation() {
     locationConfirmed.value = true;
-    console.log('Coordenadas seleccionadas:', newReport.coords);
 }
 
 const editLocation = () => locationConfirmed.value = false;
@@ -154,6 +166,47 @@ const hideImageInputHandler = () => showImageInput.value = showImageInput.value 
 const isNotEmpty = (str) => str.trim().length > 0;
 const isLongEnough = (str) => str.trim().length >= MIN_LENGTH;
 const containsNonDigitCharacters = (str) => /\D/.test(str);
+
+
+function handleFiles(event) {
+    const files = Array.from(event.target.files).slice(0, 5);
+    selectedFiles.value = files;
+
+    if (fileInput.value) {
+        fileInput.value.files = createFileList(files);
+    }
+}
+
+function createFileList(files) {
+    const dataTransfer = new DataTransfer();
+    files.forEach(file => dataTransfer.items.add(file));
+    return dataTransfer.files;
+}
+
+async function saveReport() {
+    isFormLoading.value = true;
+    await uploadImages();
+    try {
+        const reportCreated = await store.dispatch("reports/createReport", newReport);
+        if (reportCreated) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Reporte guardado',
+                text: 'El reporte se ha registrado correctamente. Un administrador lo revisará para revisar su veracidad, una vez autorizado su reporte puedes verlo junto a los demás reportes de la página!!'
+            });
+        }
+        router.push({ path: "/reports" });
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error,
+        })
+    } finally {
+        isFormLoading.value = false;
+    }
+}
+
 </script>
 
 <template>
@@ -213,7 +266,7 @@ const containsNonDigitCharacters = (str) => /\D/.test(str);
                     </GoogleMap>
                     <div class="button__container">
                         <button v-show="!locationConfirmed" @click="confirmLocation"
-                            class="confirm-position__button btn waves-effect waves-light blue-grey darken-2">Confirmar
+                            class="confirm-position__button btn waves-effect waves-light blue-grey darken-2 pulse">Confirmar
                             Ubicación</button>
                         <button v-show="locationConfirmed" @click="editLocation"
                             class="confirm-position__button btn waves-effect waves-light blue-grey darken-2">Editar
@@ -222,7 +275,7 @@ const containsNonDigitCharacters = (str) => /\D/.test(str);
                 </div>
 
                 <!-- Imagen y videos -->
-                <div class="multimedia__container">
+                <div class="multimedia__container" v-show="!isFormLoading">
                     <div class="shower__container" v-show="!showImageInput">
                         <label for="show-multimedia">¿Tienes fotografías para evidenciar la incidencia? (opcional)</label>
                         <a class="waves-effect waves-light btn-small blue-grey" @click="showImageInputHandler"><i
@@ -230,18 +283,29 @@ const containsNonDigitCharacters = (str) => /\D/.test(str);
                     </div>
 
                     <div class="multimedia-form__container" v-show="showImageInput">
-                        <form @submit.prevent="uploadImages">
+                        <div class="multimedia-input__container">
                             <input type="file" accept="image/*" multiple @change="handleFiles" ref="fileInput">
-                            <button type="submit" class="btn waves-effect waves-light" :class="{'disabled': selectedFiles.length === 0}">Subir Imágenes</button>
-                        </form>
-                    </div>
+                            <span>
+                                <div class="image-counter">
+                                    {{ selectedFiles.length }}/5
+                                </div>
+                            </span>
+                        </div>
 
+                        <div class="mutlimedia__buttons">
+                            <a @click="hideImageInputHandler"
+                                class="btn waves-effect waves-light red submit-images__button">Cancelar</a>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="col s12 submit-report__button">
                     <button type="submit" class="btn waves-effect waves-light blue"
-                        :class="{ 'disabled': !isFormValid }">Enviar Reporte <i
+                        :class="{ 'disabled': !isFormValid || isFormLoading }" @click="saveReport">Enviar Reporte <i
                             class="material-icons right">send</i></button>
+                </div>
+                <div class="progress" v-show="isFormLoading">
+                    <div class="indeterminate"></div>
                 </div>
             </div>
         </div>
@@ -321,9 +385,26 @@ main {
 .submit-report__button {
     width: 100%;
     margin-top: 20px;
+    margin-bottom: 20px;
 
     button {
         width: 100%;
     }
+}
+
+.mutlimedia__buttons {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    align-items: center;
+
+}
+
+.multimedia-input__container {
+    display: flex;
+    justify-content: flex-start;
+    gap: 15px;
+    align-items: center;
 }
 </style>

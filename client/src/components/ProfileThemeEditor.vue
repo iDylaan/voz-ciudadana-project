@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch, defineProps, defineEmits, reactive, onMounted } from "vue";
+import Swal from 'sweetalert2';
 import { useStore } from "vuex";
 
 const props = defineProps({
@@ -15,6 +16,7 @@ const profilePics = reactive({});
 const store = useStore();
 const step = ref(0);
 const userData = reactive({});
+const isLoading = ref(false);
 
 watch(() => props.show, (newValue) => {
     showEditor.value = newValue;
@@ -50,14 +52,31 @@ const closeEditor = () => {
 };
 
 const updateProfileValues = async () => {
+    isLoading.value = true;
     profilePics.user_id = store.state.auth.user.id || localStorage.getItem('userID');
     profilePics.token = localStorage.getItem('token');
     console.log(profilePics);
     try {
         await store.dispatch('auth/updateProfileTheme', profilePics);
-        showEditor.value = false;
+        Swal.fire({
+            icon: 'success',
+            title: 'Perfil actualizado!',
+            text: 'Tu perfil ahora se ve más fresco!! ✨🤙'
+        }).then((result) => {
+            if (result.value) {
+                window.location.reload();
+                showEditor.value = false;
+                emit('update:show', false);
+            }
+        });
     } catch (error) {
-        console.log(error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error,
+        })
+    } finally {
+        isLoading.value = false;
     }
 };
 </script>
@@ -125,6 +144,9 @@ const updateProfileValues = async () => {
                         @click="setPicStep">Regresar</a>
                     <a class="waves-effect waves-light btn light-green" @click="updateProfileValues"
                         :class="{ 'disabled': profilePics.banner <= 0 }">Terminar</a>
+                </div>
+                <div class="progress" v-show="isLoading">
+                    <div class="indeterminate"></div>
                 </div>
             </div>
         </div>

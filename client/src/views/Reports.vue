@@ -7,6 +7,8 @@ import Swal from 'sweetalert2';
 
 // Componentes
 import Header from "@/components/Header.vue";
+import ReportDetails from "@/components/ReportDetails.vue";
+import Footer from '@/components/Footer.vue';
 
 // Variables
 const router = useRouter();
@@ -16,12 +18,22 @@ const searchQuery = ref('');
 const sortOption = ref('recent');
 const groupOption = ref('all');
 const limit = ref(10); // Número inicial de reportes a mostrar
+const isLoadingPage = ref(true);
+const isModalOpen = ref(false);
+let selectedReport = {};
 
 // Funciones
 onMounted(async () => {
+  isLoadingPage.value = true;
   await updateReports();
   createIntersectionObserver();
+  isLoadingPage.value = false;
 });
+
+const showModal = (report) => {
+  selectedReport = report;
+  isModalOpen.value = true;
+}
 
 const updateReports = async () => {
   try {
@@ -110,8 +122,24 @@ const createIntersectionObserver = () => {
       </div>
     </div>
 
+    <div v-show="isLoadingPage" class="row loader__container">
+      <div class="preloader-wrapper big active">
+        <div class="spinner-layer spinner-blue-only">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div>
+          <div class="gap-patch">
+            <div class="circle"></div>
+          </div>
+          <div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Lista de Reportes -->
-    <div class="row">
+    <div class="row" v-show="!isLoadingPage">
       <div v-for="report in displayedReports" :key="report.id" class="col s12 m6 l4 xl3">
         <div class="card report-card">
           <div class="card-content">
@@ -128,7 +156,7 @@ const createIntersectionObserver = () => {
             </div>
           </div>
           <div class="card-action">
-            <a href="#" style="color: #0f445b;">Ver Detalles</a>
+            <a style="color: #0f445b;" @click="showModal(report)">Ver Detalles</a>
           </div>
         </div>
       </div>
@@ -138,7 +166,11 @@ const createIntersectionObserver = () => {
         <a class="waves-effect waves-light btn">Cargar más</a>
       </div>
     </div>
+
+    <ReportDetails :show-modal="isModalOpen" :report-details="selectedReport"
+      @update:showModal="isModalOpen = $event" />
   </main>
+  <Footer />
 </template>
 
 
@@ -219,6 +251,8 @@ main {
         img {
           max-height: 100%;
           max-width: 100%;
+          object-fit: cover;
+          object-position: center;
         }
 
         .material-icons {
@@ -226,6 +260,7 @@ main {
           color: #9e9e9e;
         }
       }
+
     }
 
     .card-action {
@@ -236,8 +271,15 @@ main {
         color: #039be5;
         text-transform: uppercase;
         font-weight: bold;
+        cursor: pointer;
       }
     }
   }
+}
+
+.loader__container {
+  display: grid;
+  place-content: center;
+  width: 100vw;
 }
 </style>

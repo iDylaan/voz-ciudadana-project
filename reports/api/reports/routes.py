@@ -184,7 +184,7 @@ def get_report(id_report):
 def create_report():
     try:
         data = request.get_json()
-        
+
         # * Validating null values
         title = data.get("title", None)
         description = data.get("description", None)
@@ -219,15 +219,28 @@ def create_report():
         if images is not None:
             for image in images:
                 new_report["images"].append(image)
-        
         errors = val_req_data(new_report, report_schema)
         if errors:
             return handle_error({'description': 'Error en la validación de la petición','code': 400, 'details': errors}), 400
+        
+        result = query(SQL_STRINGS.GET_USER_BY_ID, {'id_user': user_id}, True)
+        if result["status"] == "NOT_FOUND":
+            return handle_error({'description': 'No se encontró el usuario con id {}'.format(user_id),'code': 404}), 404
+        elif result["status"]!= "OK":
+            return handle_error({'description': 'No se pudo obtener el usuario','code': 500}), 500
+        
+        result = query(SQL_STRINGS.GET_CATEGORY_BY_ID, {'category_id': category_id}, True)
+        if result["status"] == "NOT_FOUND":
+            return handle_error({'description': 'No se encontró la categoria con id {}'.format(category_id),'code': 404}), 404
+        elif result["status"]!= "OK":
+            return handle_error({'description': 'No se pudo obtener la categoria','code': 500}), 500
+        
         new_report['coords'] = 'lat:{}, lng:{}'.format(new_report['coords']['lat'], new_report['coords']['lng'])
+        
         result = sql(SQL_STRINGS.INSERT_REPORT, {
             "report_title": new_report['title'],
             "report_description": new_report['description'],
-            "user_id": new_report['user_id'],
+             "user_id": new_report['user_id'],
             "category_id": new_report['category_id'],
             "status_id": new_report['status_id'],
             "coords": new_report['coords'],
@@ -235,7 +248,7 @@ def create_report():
         if (result["status"] != "OK"):
             return handle_error({'description': 'Error inesperado en el registro del reporte', 'code': 500}), 500
         
-        if images is not None:
+        if len(new_report['images']) > 0:
             values_insrt = ''
             for index, image in enumerate(new_report['images']):
                 values_insrt += '(\'{}\', {}, 1), '.format(image, result['last_insert_id']) \

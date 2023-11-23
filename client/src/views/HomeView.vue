@@ -1,8 +1,10 @@
 <script setup>
 import { onMounted, ref } from 'vue';
-import Header from '@/components/Header.vue';
-import ProfileThemeEditor from '@/components/ProfileThemeEditor.vue';
 import { tokenExpired } from "@/utils/misc.js";
+// Componentes
+import ProfileThemeEditor from '@/components/ProfileThemeEditor.vue';
+import Header from '@/components/Header.vue';
+import Footer from '@/components/Footer.vue';
 
 const token = localStorage.getItem('token') ? localStorage.getItem('token') : '';
 
@@ -28,7 +30,9 @@ onMounted(async () => {
     <img src="../assets/img/Logo Voz Ciudadana.svg" alt="" width="170" height="170">
     <router-link v-if="!authed" class="btn-start" to="/login">Comenzar</router-link>
     <p>LIFO</p>
+
   </main>
+  <Footer />
 </template>
 
 <style lang="scss" scoped>

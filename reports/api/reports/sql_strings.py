@@ -185,3 +185,9 @@ class Sql_Strings():
         "WHERE user_id = %(id_user)s "
         "AND report_id = %(id_report)s "
     )
+    
+    
+    GET_CATEGORY_BY_ID = (
+        "SELECT * FROM report_categories "
+        "WHERE id = %(category_id)s"
+    )

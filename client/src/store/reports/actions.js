@@ -90,3 +90,31 @@ export async function getReportCategories({ commit }, payload) {
         throw new Error(error); // The error is thrown again.
     }
 }
+
+/**
+ * This function is used to get the report categories from the private backend.
+ *  
+ * @param {Object} commit - The commit method is a function that allows us to modify
+ *  the state.
+ * @param {Object} payload - This parameter is not used in this function.
+ *  
+ * @returns {void}
+ */
+export async function createReport({ commit }, report) {
+    try {
+        const response = await privateReportApi.post('/reports', report); // This line makes a POST request to the /reports endpoint of the private backend.
+        if (response.status !== 200) {
+            throw new Error(response.statusText); // If the response status is not 200 (OK), an error is thrown with the response status text.
+        }
+
+        const result = response.data; // The response data is assigned to the result variable.
+
+        if (result.status === "OK") {
+            return true; // If the status of the response data is "OK", the setReportsCategories function is called with the data from the response.
+        } else {
+            throw new Error("No se pudo crear el reporte, intenta nuevamente más tarde. 🙁"); // If the status is not "OK", an error is thrown with the specified message.
+        }
+    } catch (error) {
+        throw new Error(error); // The error is thrown again.
+    }
+}
