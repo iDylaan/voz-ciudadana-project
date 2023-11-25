@@ -44,7 +44,7 @@ def create_app():
   # inicializa la api en app principal
   api.init_app(app)
 
-  app.config['JWT_SECRET_KEY'] = "ejemplo123"
+  app.config['JWT_SECRET_KEY'] = "f7VCj8hcZ4JdLktNBmR6eNqPTgb2UB19ay13k5fR0NfbuIRtJYtMEvY9QkKOc4fp"
   app.config['JWT_ACCESS_TOKEN_EXPIRES'] = int(3600)
 
   jwt.init_app(app)
