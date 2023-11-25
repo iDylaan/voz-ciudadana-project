@@ -1,5 +1,6 @@
 ---
-    
+    import Layout from "@/layouts/Layout.astro";
+    import Home from '@/components/ui/Home.vue'
 ---
 
 <script >
@@ -13,13 +14,16 @@
         Astro.redirect('/login')
     }
 
-    const {nombre:username , email} = jwtDecode(token).sub
+    const { nombre:username , email } = jwtDecode(token).sub
 
     updateUser({username, email})
-    console.log($User.get());
+
 </script>
 
 <div>
+    <Layout>
+        <Home />
+    </Layout>
 </div>
 
 <style>

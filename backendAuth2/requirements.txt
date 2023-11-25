@@ -9,3 +9,4 @@ PyMySQL
 Flask-Cors
 cryptography 
 flask-jwt-extended
+Flask-Cors
