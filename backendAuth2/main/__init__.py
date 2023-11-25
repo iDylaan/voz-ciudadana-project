@@ -19,6 +19,7 @@ def create_app():
   app = Flask(__name__)
 
   cors = CORS(app, resources = {r'/*': {'origins': '*'} })
+  cors = CORS(app, controllers = {r'/*': {'origins': '*'} })
 
   # cargar variables de entorno
   load_dotenv()
