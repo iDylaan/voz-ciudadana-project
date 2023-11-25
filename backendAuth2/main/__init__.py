@@ -39,7 +39,8 @@ def create_app():
 
   import main.controllers as controllers
 
-  api.add_resource(controllers.UsuarioController, '/update-first-access/<id>')
+  # api.add_resource(controllers.UsuarioController, '/update-first-access/<id>')
+  api.add_resource(controllers.UsuarioController, '/update_profile_theme/<id>')
 
   # inicializa la api en app principal
   api.init_app(app)
