@@ -9,8 +9,8 @@ class Usuario(db.Model):
     password = db.Column(db.String(255), nullable = False)
     is_admin = db.Column(db.Boolean, nullable = False, default=False)
     is_active = db.Column(db.Boolean, nullable = False, default=True)
-    profile_picture = db.Column(db.Integer, nullable = False, default=1)
-    profile_banner = db.Column(db.Integer, nullable = False, default=1)
+    profile_picture = db.Column(db.Integer, nullable = False, default=0)
+    profile_banner = db.Column(db.Integer, nullable = False, default=0)
     first_access = db.Column(db.Boolean, nullable = False, default=True)
 
     def __repr__(self) -> str:
@@ -32,7 +32,11 @@ class Usuario(db.Model):
             "email": self.email,
             "nombre": self.username,
             "is_admin": self.is_admin,
-            "is_active": self.is_active
+            "is_active": self.is_active,
+            'profile_banner': self.profile_banner,
+            'profile_picture': self.profile_picture,
+            'first_access': self.first_access
+
         }
         return usuario_json
     
@@ -43,11 +47,17 @@ class Usuario(db.Model):
         password = usuario_json.get("password")
         is_active = usuario_json.get("is_active")
         is_admin = usuario_json.get("is_admin")
+        profile_banner = usuario_json.get('profile_banner')
+        profile_picture = usuario_json.get('profile_picture')
+        first_access = usuario_json.get('first_access')
 
         return Usuario(
             email = email,
             username = username,
             is_active = is_active,
             plain_password = password,
-            is_admin = is_admin
+            is_admin = is_admin,
+            profile_banner = profile_banner,
+            profile_picture = profile_picture,
+            first_access = first_access
         )
