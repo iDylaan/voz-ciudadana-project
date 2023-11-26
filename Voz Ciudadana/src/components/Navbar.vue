@@ -129,6 +129,8 @@ const logout = () => {
                         class="material-icons">manage_accounts</i>Editar Perfil</a></li>
             <li v-if="authed"><a class="waves-effect sidenav-close" @click="logout"><i
                         class="material-icons">logout</i>Cerrar Sesión</a></li>
+            <li><router-link class="waves-effect sidenav-close" to="/quienes-somos"><i
+                        class="material-icons">groups</i>Quienes Somos</router-link></li>
         </ul>
         <div class="background__button">
             <button class="menu__icon" @click="toggleMenu" :class="menuActive ? 'menu__active' : ''"

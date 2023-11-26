@@ -34,7 +34,11 @@ const publicRoutes = [
     name: 'reports',
     component: () => import('../views/Reports.vue')
   },
-
+  {
+    path: '/quienes-somos',
+    name: 'quienes-somos',
+    component: () => import('../views/QuienesSomos.vue')
+  },
 ]
 
 const adminRoutes = [
