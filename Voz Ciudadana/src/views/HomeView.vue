@@ -2,7 +2,6 @@
 import { onMounted, ref } from 'vue';
 import { tokenExpired } from "@/utils/misc.js";
 // Componentes
-import ProfileThemeEditor from '@/components/ProfileThemeEditor.vue';
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 
@@ -15,7 +14,7 @@ const firstAccess = ref(false);
 onMounted(async () => {
   document.title = 'VC | Home';
 
-  
+
 });
 
 
@@ -24,7 +23,6 @@ onMounted(async () => {
 
 <template>
   <Header />
-  <ProfileThemeEditor />
   <main>
     <h1>Bienvenidos</h1>
     <img src="../assets/img/Logo Voz Ciudadana.svg" alt="" width="170" height="170">

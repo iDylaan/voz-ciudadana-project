@@ -27,18 +27,10 @@ onMounted(() => {
     profilePics.banner = '';
     step.value = 1;
 
-    userData.username = store.state.auth.user.username || localStorage.getItem('username');
-    userData.email = store.state.auth.user.email || localStorage.getItem('email');
+    userData.username = store.state.auth.user.username;
+    userData.email = store.state.auth.user.email;
 
-    setTimeout(() => {
-        const firstAccess = Boolean(store.state.auth.user.firstAccess || localStorage.getItem('first_access') === 'true');
-        const picProfile = store.state.auth.user.picProfile || localStorage.getItem('pic-profile');
-        const bannerProfile = store.state.auth.user.bannerProfile || localStorage.getItem('banner-profile');
-        showEditor.value = firstAccess;
-        profilePics.pic = firstAccess ? 0 : picProfile;
-        profilePics.banner = firstAccess ? 0 : bannerProfile;
-    }, 1000);
-
+    showEditor.value = JSON.parse(localStorage.getItem('first_access'));
 });
 
 const handlePic = (pic) => profilePics.pic = pic;
@@ -53,9 +45,8 @@ const closeEditor = () => {
 
 const updateProfileValues = async () => {
     isLoading.value = true;
-    profilePics.user_id = store.state.auth.user.id || localStorage.getItem('userID');
+    profilePics.user_id = store.state.auth.user.id;
     profilePics.token = localStorage.getItem('token');
-    console.log(profilePics);
     try {
         await store.dispatch('auth/updateProfileTheme', profilePics);
         Swal.fire({
@@ -64,7 +55,7 @@ const updateProfileValues = async () => {
             text: 'Tu perfil ahora se ve más fresco!! ✨🤙'
         }).then((result) => {
             if (result.value) {
-                window.location.reload();
+                store.commit('auth/setThemePorfile', profilePics);
                 showEditor.value = false;
                 emit('update:show', false);
             }
@@ -82,7 +73,7 @@ const updateProfileValues = async () => {
 </script>
 
 <template>
-    <div v-if="showEditor || show" class="profile-theme-editor">
+    <div v-if="showEditor" class="profile-theme-editor">
         <span class="bg-toggler"></span>
 
         <div class="container">

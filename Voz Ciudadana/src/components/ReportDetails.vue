@@ -20,8 +20,7 @@ const reportFixedVoted = ref(false);
 // Funciones
 onMounted(async () => {
     initializeCarousel();
-    var elems = document.querySelectorAll('.tooltipped');
-    var instances = M.Tooltip.init(elems, { position: "top", inDuration: 250, outDuration: 175, enterDelay: 50, exitDelay: 50 });
+    initializeButtonsToolTips();
 });
 
 watch(() => props.showModal, (newVal) => {
@@ -32,6 +31,7 @@ watch(() => props.showModal, (newVal) => {
 
 watch(() => props.reportDetails.images, () => {
     initializeCarousel();
+    initializeButtonsToolTips();
 }, { deep: true });
 
 watch(() => props.reportDetails, (newVal) => {
@@ -49,6 +49,13 @@ const closeModal = () => {
     emit('update:showModal', false);
 };
 
+const initializeButtonsToolTips = () => {
+    nextTick(() => {
+        var elems = document.querySelectorAll('.tooltipped');
+        M.Tooltip.init(elems, { position: "top", inDuration: 250, outDuration: 175, enterDelay: 50, exitDelay: 50 });
+    });
+}
+
 const initializeCarousel = () => {
     nextTick(() => {
         var elems = document.querySelectorAll('.carousel');
@@ -64,7 +71,7 @@ const toggleReportHelperVoted = () => {
     reportHelperVoted.value = !reportHelperVoted.value;
 };
 const toggleReportFixedVoted = () => {
-    reportFixedVoted.value =!reportFixedVoted.value;
+    reportFixedVoted.value = !reportFixedVoted.value;
 };
 </script>
 

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useStore } from 'vuex';
 import { tokenExpired } from '@/utils/misc.js';
+import { jwtDecode } from 'jwt-decode';
 
 const publicRoutes = [
   {
@@ -33,7 +34,7 @@ const publicRoutes = [
     name: 'reports',
     component: () => import('../views/Reports.vue')
   },
-  
+
 ]
 
 const adminRoutes = [
@@ -63,7 +64,6 @@ router.beforeEach(async (to, from, next) => {
   const store = useStore();
   const token = localStorage.getItem('token');
   const isAuthenticated = token && !tokenExpired(token);
-  const isAdmin = localStorage.getItem('is_admin');
 
   if (to.path === '/login' || to.path === '/signup') {
     if (isAuthenticated) {
@@ -81,8 +81,15 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (isAuthenticated) {
+    const tokenDecoded = jwtDecode(token);
+    tokenDecoded.sub.username = tokenDecoded.sub.nombre;
+    const bannerLS = localStorage.getItem('profile_banner');
+    const picLS = localStorage.getItem('profile_picture');
+    tokenDecoded.sub.profile_banner = bannerLS ? bannerLS : tokenDecoded.sub.profile_banner;
+    tokenDecoded.sub.profile_picture = picLS ? picLS : tokenDecoded.sub.profile_picture;
+    store.commit('auth/setUser', tokenDecoded.sub);
     // Verificación de roles.
-    if (to.meta.adminRoutes && !isAdmin) {
+    if (to.meta.adminRoutes && !is_admin) {
       next({ path: '/not-allowed', hash: '' });
       return;
     }

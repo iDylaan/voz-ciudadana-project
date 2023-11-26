@@ -12,13 +12,7 @@ const token = ref(localStorage.getItem("token") ? localStorage.getItem("token") 
 const authed = ref(false);
 const isEditorVisible = ref(false);
 
-const userData = reactive({
-    username: null,
-    email: null,
-    isAdmin: null,
-    picProfile: null,
-    bannerProfile: null,
-});
+const userData = reactive(store.state.auth.user);
 
 const openProfileEditor = () => isEditorVisible.value = true;
 const closeProfileEditor = () => isEditorVisible.value = false;
@@ -32,17 +26,22 @@ const closeSidenav = () => {
 };
 
 const userImageSrc = computed(() => {
-    return userData.picProfile !== null ? require(`@/assets/icon/profile-pictures/profilePic${userData.picProfile}.svg`) : '';
+    return userData.profile_picture ? require(`@/assets/icon/profile-pictures/profilePic${userData.profile_picture}.svg`) : '';
 });
 
 const userBannerStyle = computed(() => {
-    return userData.bannerProfile !== null ? `url(${require(`@/assets/img/profile-banners/banner${userData.bannerProfile}.svg`)})` : '';
+    return userData.profile_banner ? `url(${require(`@/assets/img/profile-banners/banner${userData.profile_banner}.svg`)})` : '';
 });
 
 // Watcher para reaccionar a los cambios de ruta
 watch(() => router.currentRoute.value, () => {
     closeSidenav();
 });
+
+watch(() => store.state.auth.user, (user) => {
+    userData.profile_picture = user.profile_picture;
+    userData.profile_banner = user.profile_banner;
+})
 
 // Asegúrate de que se cierre el sidenav cuando la ruta cambia.
 onBeforeRouteLeave(() => {
@@ -59,12 +58,6 @@ onMounted(() => {
             menuActive.value = false;
         },
     });
-
-    userData.username = store.state.auth.user.username || localStorage.getItem('username');
-    userData.email = store.state.auth.user.email || localStorage.getItem('email');
-    userData.isAdmin = store.state.auth.user.isAdmin || localStorage.getItem('is_admin');
-    userData.picProfile = store.state.auth.user.picProfile || localStorage.getItem('pic_profile');
-    userData.bannerProfile = store.state.auth.user.bannerProfile || localStorage.getItem('banner_profile');
 });
 
 onBeforeUnmount(() => {
@@ -112,7 +105,8 @@ const logout = () => {
                         class="material-icons">home</i>Inicio</router-link></li>
             <li><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/reports"><i
                         class="material-icons">reports</i>Reportes</router-link></li>
-            <li><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/map-reports"><i class="material-icons">map</i>Mapa de
+            <li><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/map-reports"><i
+                        class="material-icons">map</i>Mapa de
                     reportes</router-link></li>
             <li v-if="authed"><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/"><i
                         class="material-icons">dashboard</i>Dashboard</router-link></li>

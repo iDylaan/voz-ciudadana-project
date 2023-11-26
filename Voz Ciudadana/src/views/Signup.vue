@@ -1,23 +1,58 @@
 <script setup>
-import { onMounted, ref, reactive } from 'vue';
+import { onMounted, ref, reactive, computed } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
+const inputs = ['email', 'password', 'password_confirmation', 'username'];
 const signupReq = reactive({
   email: '',
   password: '',
   password_confirmation: '',
   username: ''
 });
-
-const confirmPassChecker = () => signupReq.password === signupReq.password_confirmation;
-const getValidateEmptyFields = () => signupReq.email !== '' || signupReq.password !== '' || signupReq.password_confirmation !== '' || signupReq.username !== '';
+const inputErrors = ref({});
+const isLoading = computed(() => store.state.auth.isFormLoading);
 
 const signup = async () => {
-  if (!confirmPassChecker()) return;
-  if (!getValidateEmptyFields()) return;
+  handleInputs();
+  console.log(inputErrors.value);
+  if (Object.keys(inputErrors.value).length > 0) {
+    return;
+  }
   await store.dispatch('auth/signup', signupReq);
 }
+
+const handleInputs = () => {
+  inputErrors.value = {};
+  const emailRegex = new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$");
+  const passRegex = new RegExp("^.{8,}$");
+
+  if (signupReq.username === '') {
+    inputErrors.value.username = 'Campo obligatorio';
+  } else if (signupReq.username.length < 4) {
+    inputErrors.value.username = 'El nombre de usuario debe tener al menos 4 caracteres';
+  }
+
+  if (signupReq.email === '') {
+    inputErrors.value.email = 'Campo obligatorio';
+  } else if (!emailRegex.test(signupReq.email)) {
+    inputErrors.value.email = 'Formato de email incorrecto';
+  }
+
+  if (signupReq.password === '') {
+    inputErrors.value.password = 'Campo obligatorio';
+  } else if (!passRegex.test(signupReq.password)) {
+    inputErrors.value.password = 'Mínimo 8 carácteres';
+  }
+
+  if (signupReq.password_confirmation === '') {
+    inputErrors.value.password_confirmation = 'Campo obligatorio';
+  } else if (signupReq.password_confirmation !== signupReq.password) {
+    inputErrors.value.password_confirmation = 'Las contraseñas no coinciden';
+  }
+};
+
+
 
 onMounted(() => {
   document.title = 'VC | Registro';
@@ -29,13 +64,50 @@ onMounted(() => {
   <main>
     <img src="../assets/img/Logo Voz Ciudadana.svg" alt="" width="120" height="120">
     <h1>Registrarse</h1>
-    <form @submit.prevent @submit="signup">
-      <input type="text" name="" placeholder="Usuario" v-model="signupReq.username">
-      <input type="email" name="" placeholder="Email" v-model="signupReq.email">
-      <input type="password" name="" placeholder="Password" v-model="signupReq.password">
-      <input type="password" name="" placeholder="Password" v-model="signupReq.password_confirmation">
-      <p v-if="store.state.error !== ''" class="error-message">{{ store.state.error }}</p>
+    <form @submit.prevent @submit="signup" novalidate>
+
+      <!-- Usuario -->
+      <div class="input-field col s6">
+        <i class="material-icons prefix">face</i>
+        <input type="text" name="username" id="username" class="validate" v-model="signupReq.username"
+          :class="{ 'invalid': inputErrors.username }">
+        <label for="username">Nombre de usuario</label>
+        <span class="helper-text" :data-error="inputErrors.username" v-show="inputErrors.username"></span>
+      </div>
+
+      <!-- Email -->
+      <div class="input-field col s6">
+        <i class="material-icons prefix">mail</i>
+        <input type="email" name="email" id="email" v-model="signupReq.email" class="validate"
+          :class="{ 'invalid': inputErrors.email }">
+        <label for="email">Correo electrónico</label>
+        <span class="helper-text" :data-error="inputErrors.email" v-if="inputErrors.email"></span>
+      </div>
+
+      <!-- Pass -->
+      <div class="input-field col s6">
+        <i class="material-icons prefix">password</i>
+        <input type="password" name="password" id="password" class="validate" v-model="signupReq.password"
+          :class="{ 'invalid': inputErrors.password }">
+        <label for="password">Contraseña</label>
+        <span class="helper-text" :data-error="inputErrors.password" v-show="inputErrors.password"></span>
+      </div>
+
+      <!-- Confirm Pass -->
+      <div class="input-field col s6">
+        <i class="material-icons prefix">vpn_key</i>
+        <input type="password" name="confirm_password" id="confirm_password" class="validate"
+          v-model="signupReq.password_confirmation" :class="{ 'invalid': inputErrors.password_confirmation }">
+        <label for="confirm_password">Confirmar contraseña</label>
+        <span class="helper-text" :data-error="inputErrors.password_confirmation"
+          v-show="inputErrors.password_confirmation"></span>
+      </div>
+
+      <!-- Sumbit -->
       <input type="submit" value="Registrarme">
+      <div class="progress" v-show="isLoading">
+        <div class="indeterminate"></div>
+      </div>
     </form>
     <p>Ya tienes cuenta?, <router-link to="/login">Iniciar Sesión</router-link></p>
   </main>

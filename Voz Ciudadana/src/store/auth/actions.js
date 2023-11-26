@@ -1,80 +1,86 @@
 import auth_api from '@/api/auth_api.js';
+import { authApi, authApiJWT } from '@/api/authApi.js';
 import router from '@/router';
+import { jwtDecode } from 'jwt-decode';
+
 
 export async function login({ commit }, payload) {
+    commit('toggleLoading');
     try {
-        const response = await auth_api.post('/login', {
+        const response = await authApi.post('/auth/login', {
             email: payload.email,
             password: payload.password
         });
-
         const { data } = response;
-        localStorage.setItem('token', data.accessToken);
-        const firstAccess = data.user.first_access == 1 ? true : false;
-        commit('setUser', {
-            username: data.user.username,
-            isAdmin: data.user.is_admin,
-            email: data.user.email,
-            userID: data.user.id,
-            picProfile: data.user.profile_picture,
-            bannerProfile: data.user.profile_banner,
-            firstAccess: firstAccess
-        });
+        const { access_token, nombre, email } = data;
+        localStorage.setItem('token', access_token);
+        const tokenDecoded = jwtDecode(access_token);
+        tokenDecoded.sub.username = tokenDecoded.sub.nombre;
+        localStorage.setItem('profile_picture', tokenDecoded.sub.profile_picture);
+        localStorage.setItem('profile_banner', tokenDecoded.sub.profile_banner);
+        localStorage.setItem('first_access', tokenDecoded.sub.first_access);
+        console.log(data.access_token);
+        commit('setUser', tokenDecoded.sub);
         commit('cleanError');
-
-        if (data.user.is_admin) {
-            router.push("/admin");
-        } else {
-            router.push("/");
-        }
+        router.push("/");
     } catch (error) {
         console.log(error);
-        if (error.message) {
-            commit('setError', error.message);
-        } else {
+        if (error) {
             commit('setError', error.response.data.message);
+        } else {
+            commit('setError', 'Error al iniciar sesión');
         }
+    } finally {
+        commit('toggleLoading');
     }
 }
-export async function signup({ commit }, payload) {
+export async function signup({ commit }, user) {
+    commit('toggleLoading');
     try {
-        await auth_api.post('/register', {
-            email: payload.email,
-            password: payload.password,
-            username: payload.username
-        });
-        commit('cleanError');
+        const res = await authApi.post('/auth/register', user)
+        if (res.status == 200) {
+            const resLog = await authApi.post('/auth/login', user)
+            const { access_token, nombre, email } = resLog.data
+
+            const newUser = {
+                username: nombre,
+                email: email
+            }
+
+            localStorage.setItem('token', access_token)
+            commit('setUser', newUser);
+            router.push({ path: '/' });
+
+            commit('cleanError');
+        } else {
+            throw new Error('Error al iniciar sesion')
+        }
 
     } catch (error) {
-        commit('setError', error.response.data.message);
-        setTimeout(() => {
-            commit('cleanError');
-        }, 200);
+        console.log(error);
+        if (error) {
+            commit('setError', error.response.data.message);
+        } else {
+            commit('setError', 'Error al iniciar sesión');
+        }
+    } finally {
+        commit('toggleLoading');
     }
 }
 export async function logout({ commit }) {
     localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    localStorage.removeItem('is_admin');
-    localStorage.removeItem('email');
-    localStorage.removeItem('userID');
-    localStorage.removeItem('pic_profile');
-    localStorage.removeItem('banner_profile');
+    localStorage.removeItem('profile_picture');
+    localStorage.removeItem('profile_banner');
+    localStorage.removeItem('first_access');
     commit('cleanUser');
 }
 export async function updateProfileTheme({ commit }, payload) {
     try {
-        const reponse = await auth_api.post('/update_user_profile', {
-            jwt: payload.token,
-            user_id: payload.user_id,
+        const response = await authApiJWT.put('/update_profile_theme/' + payload.user_id, {
             profile_banner: payload.banner,
-            profile_pic: payload.pic
+            profile_picture: payload.pic
         });
-
-        commit('setThemePorfile', {
-            banner: payload.banner,
-            pic: payload.pic
-        });
+        commit('setUser', response.data);
     } catch (error) {
         throw new Error(error);
     }

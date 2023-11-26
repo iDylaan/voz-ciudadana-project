@@ -1,6 +1,6 @@
 <script setup>
 // Importaciones
-import { GoogleMap, Marker } from 'vue3-google-map'; 
+import { GoogleMap, Marker } from 'vue3-google-map';
 import { ref, onMounted, reactive, nextTick, watch, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -284,7 +284,15 @@ async function saveReport() {
 
                     <div class="multimedia-form__container" v-show="showImageInput">
                         <div class="multimedia-input__container">
-                            <input type="file" accept="image/*" multiple @change="handleFiles" ref="fileInput">
+                            <div class="file-field input-field">
+                                <div class="btn">
+                                    <span>Evidencia</span>
+                                    <input type="file" accept="image/*" multiple @change="handleFiles" ref="fileInput">
+                                </div>
+                                <div class="file-path-wrapper">
+                                    <input class="file-path validate" type="text" placeholder="Sube una o más fotos">
+                                </div>
+                            </div>
                             <span>
                                 <div class="image-counter">
                                     {{ selectedFiles.length }}/5
