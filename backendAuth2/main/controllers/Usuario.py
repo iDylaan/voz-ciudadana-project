@@ -21,10 +21,13 @@ class UsuarioController(Resource):
             db.session.commit()
             return usuario.to_json(), 201
         except:
+            db.session.rollback()
             return {
                 "message":"Ocurrio un error al intentar actualizar el usuairo",
                 "status": "error"
             },505
+        finally:
+            db.session.close()
         # try:
         #     usuario = usuario_service.updateFirstAccess(id)
         #     return usuario_schema.dump(usuario, many=False)
