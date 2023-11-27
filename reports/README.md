@@ -48,3 +48,14 @@ Para iniciar el servidor de *Reports API*, ejecuta el siguiente comando:
 
 ```bash
 python .\APP_VZCDNA.py
+```
+
+## Error 
+failed to fetch an image or build from source: fai led building options: failed probing "personal" :
+Error :
+context deadline exceeded
+
+`Solucion`
+```bash
+fly wireguard reset
+```

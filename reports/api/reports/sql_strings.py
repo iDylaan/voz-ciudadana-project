@@ -16,9 +16,10 @@ class Sql_Strings():
         "LEFT JOIN REPORT_CATEGORIES rc ON r.category_id = rc.id "
         "LEFT JOIN REPORT_STATUS rs ON r.status_id = rs.id "
         "LEFT JOIN USERS u ON r.user_id = u.id "
-        "WHERE r.status_id IN (1, 2) "
+        "WHERE r.status_id = 2 "
         "AND u.is_active = 1 "
-        "GROUP BY r.id"
+        "GROUP BY r.id "
+        "ORDER BY r.creation_dt DESC"
     )
     
     GET_REPORT_BY_ID = (
@@ -190,4 +191,35 @@ class Sql_Strings():
     GET_CATEGORY_BY_ID = (
         "SELECT * FROM report_categories "
         "WHERE id = %(category_id)s"
+    )
+    
+    GET_PENDING_REPORTS = (
+        "SELECT "
+        "r.*, "
+        "rc.category_name, "
+        "rs.status_name, "
+        "u.username, "
+        "GROUP_CONCAT( "
+            "IFNULL( "
+                "JSON_OBJECT('id', ri.id, 'image', ri.image_url), "
+                "'' "
+            ") SEPARATOR '|' "
+        ") AS images "
+        "FROM REPORTS r "
+        "LEFT JOIN REPORT_IMAGES ri ON r.id = ri.report_id AND ri.is_active = 1 "
+        "LEFT JOIN REPORT_CATEGORIES rc ON r.category_id = rc.id "
+        "LEFT JOIN REPORT_STATUS rs ON r.status_id = rs.id "
+        "LEFT JOIN USERS u ON r.user_id = u.id "
+        "WHERE r.status_id = 1 "
+        "AND u.is_active = 1 "
+        "GROUP BY r.id "
+        "ORDER BY r.creation_dt DESC"
+    )
+    
+    ACTIVATE_REPORT_BY_ID = (
+        "UPDATE reports SET status_id = 2 WHERE id = %(id_report)s"
+    )
+    
+    DECLINATE_REPORT_BY_ID = (
+        "UPDATE reports SET status_id = 4 WHERE id = %(id_report)s"
     )

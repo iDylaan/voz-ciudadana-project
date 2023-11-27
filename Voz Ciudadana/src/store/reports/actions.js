@@ -118,3 +118,44 @@ export async function createReport({ commit }, report) {
         throw new Error(error); // The error is thrown again.
     }
 }
+
+export async function getPendingReports({ commit }) {
+    try {
+        const response = await reportApi.get('/pending_reports'); // This line makes a GET request to the /pending_reports
+        if (response.status !== 200) {
+            throw new Error(response.statusText); // If the response status is not 200 (OK
+        }
+        const result = response.data; // The response data is assigned to the result variable.
+        if (result.success) {
+            return result.data // If the status of the response data is "OK", the setReportsCategories function is called with the data from the response.
+        } else {
+            throw new Error("No se pudo obtener los reportes pendientes, intenta nuevamente más tarde. 🙁"); // If the status is not "OK", an error is thrown with the specified message.
+        }
+    } catch (error) {
+        throw new Error(error); // The error is thrown again
+    }
+}
+
+export async function declinateReport({ commit }, report) {
+    try {
+        const response = await privateReportApi.post(`/declinate_report/${report}`);
+        if (response.status !== 200) {
+            throw new Error(response.statusText); // If the response status is not 200 (OK
+        }
+        return true;
+    } catch (error) {
+        throw new Error(error); // The error is thrown again
+    }
+}
+
+export async function activateReport({ commit }, report) {
+    try {
+        const response = await privateReportApi.post(`/activate_report/${report}`);
+        if (response.status !== 200) {
+            throw new Error(response.statusText); // If the response status is not 200 (OK
+        }
+        return true;
+    } catch (error) {
+        throw new Error(error); // The error is thrown again
+    }
+}

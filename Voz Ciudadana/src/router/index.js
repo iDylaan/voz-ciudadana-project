@@ -79,7 +79,7 @@ router.beforeEach(async (to, from, next) => {
 
   if (!isAuthenticated && to.meta.requiresAuth) {
     // Si el usuario no está autenticado y está tratando de acceder a una ruta protegida, redirige a la página de autenticación.
-    store.getters.logout;
+    commit('auth/logout');
     next({ path: '/login', hash: '' });
     return;
   }
@@ -92,9 +92,18 @@ router.beforeEach(async (to, from, next) => {
     tokenDecoded.sub.profile_banner = bannerLS ? bannerLS : tokenDecoded.sub.profile_banner;
     tokenDecoded.sub.profile_picture = picLS ? picLS : tokenDecoded.sub.profile_picture;
     store.commit('auth/setUser', tokenDecoded.sub);
+
+
+    const is_admin = tokenDecoded.sub.is_admin;
+
     // Verificación de roles.
     if (to.meta.adminRoutes && !is_admin) {
       next({ path: '/not-allowed', hash: '' });
+      return;
+    }
+    
+    if (is_admin && to.path === '/') {
+      next({ path: '/admin', hash: '' });
       return;
     }
   }

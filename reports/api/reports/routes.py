@@ -568,3 +568,97 @@ def toggle_fix_confirm(id_report):
             return handle_error({'description': e[e.find(':')+2:], 'code': int(e[:3])}), int(e[:3])
         except Exception as e:
             return handle_error({'description': "Error inesperado en el servidor", 'code': 500}), 500
+        
+
+@mod.route('/pending_reports', methods=['GET'])
+def get_pending_reports():
+    try:
+        response = query(SQL_STRINGS.GET_PENDING_REPORTS)
+        if (response["status"] != "OK"):
+            return handle_error({'description': 'Error inesperado al registrar la confirmación', 'code': 500}), 500
+        reports_dict = [dict(row) for row in response["data"]]
+        
+        result_reports = []
+        for report in reports_dict:
+            result_report = {}
+            result_report["id"] = report["id"]
+            result_report["title"] = report["report_title"]
+            result_report["description"] = report["report_description"]
+            result_report["category"] = {
+                "id": report["category_id"],
+                "category_name": report["category_name"]
+            }
+            result_report["status"] = {
+                "id": report["status_id"],
+                "status_name": report["status_name"]
+            }
+            result_report["created_at"] = report["creation_dt"]
+            result_report["last_update"] = report["last_updated_dt"]
+            result_report["user"] = {
+                "id": report["user_id"],
+                "username": report["username"]
+            } 
+            result_report["coords"] = get_dict_coords(report["coords"])
+            result_report["images"] = []
+            if report["images"]:
+                images_dict = [json.loads(segment) for segment in str(report["images"]).split('|')]
+                for image in images_dict:
+                    if image["id"] is not None and image["image"] is not None:
+                        result_report["images"].append(image)
+            result_reports.append(result_report)
+        return jsonify({
+            "success": True,
+            "data": result_reports
+        })
+    except Exception as e:
+        print("Ha ocurrido un error en @get_pending_reports/: {} en la linea {}".format(e, e.__traceback__.tb_lineno))
+        try:
+            e = str(e)
+            return handle_error({'description': e[e.find(':')+2:], 'code': int(e[:3])}), int(e[:3])
+        except Exception as e:
+            return handle_error({'description': "Error inesperado en el servidor", 'code': 500}), 500
+        
+        
+@mod.route('/activate_report/<int:id_report>', methods=['POST'])
+@jwt_required()
+def activate_report(id_report):
+    try:
+        response = sql(SQL_STRINGS.ACTIVATE_REPORT_BY_ID, {"id_report": id_report})
+        if (response["status"] != "OK"):
+            return handle_error({'description': 'Error inesperado al registrar la confirmación del reporte', 'code': 500}), 500
+        return jsonify({
+            "success": True,
+            "data": {
+                "message": "Se activó el reporte correctamente",
+                "report_activated": True
+            }
+        })
+    except Exception as e:
+        print("Ha ocurrido un error en @activate_report/: {} en la linea {}".format(e, e.__traceback__.tb_lineno))
+        try:
+            e = str(e)
+            return handle_error({'description': e[e.find(':')+2:], 'code': int(e[:3])}), int(e[:3])
+        except Exception as e:
+            return handle_error({'description': "Error inesperado en el servidor", 'code': 500}), 500
+
+@mod.route('/declinate_report/<int:id_report>', methods=['POST'])
+@jwt_required()
+def declinate_report(id_report):
+    try:
+        response = sql(SQL_STRINGS.DECLINATE_REPORT_BY_ID, {"id_report": id_report})
+        if (response["status"] != "OK"):
+            return handle_error({'description': 'Error inesperado al rechazar el reporte', 'code': 500}), 500
+        return jsonify({
+            "success": True,
+            "data": {
+                "message": "Se reachazó el reporte correctamente",
+                "report_declinated": True
+            }
+        })
+    except Exception as e:
+        print("Ha ocurrido un error en @declinate_report/: {} en la linea {}".format(e, e.__traceback__.tb_lineno))
+        try:
+            e = str(e)
+            return handle_error({'description': e[e.find(':')+2:], 'code': int(e[:3])}), int(e[:3])
+        except Exception as e:
+            return handle_error({'description': "Error inesperado en el servidor", 'code': 500}), 500

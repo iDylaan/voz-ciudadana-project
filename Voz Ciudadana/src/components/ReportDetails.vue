@@ -16,6 +16,7 @@ const mapOptions = reactive({
 const customIcon = ref(null);
 const reportHelperVoted = ref(false);
 const reportFixedVoted = ref(false);
+const token = localStorage.getItem('token');
 
 // Funciones
 onMounted(async () => {
@@ -116,7 +117,7 @@ const toggleReportFixedVoted = () => {
                         </GoogleMap>
                     </div>
 
-                    <div class="options">
+                    <div class="options" v-show="!token">
                         <button class="btn tooltipped waves-effect" @click="toggleReportHelperVoted"
                             :style="{ backgroundColor: !reportHelperVoted ? 'white' : '#f77b72', color: !reportHelperVoted ? 'black' : 'white' }"
                             :class="{ 'waves-light': reportHelperVoted, 'waves-red': !reportHelperVoted }"
