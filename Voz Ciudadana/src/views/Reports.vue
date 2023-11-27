@@ -146,7 +146,7 @@ const createIntersectionObserver = () => {
             <span class="card-category">{{ report.category.category_name }}</span>
             <div class="report_details">
               <span class="card-date">{{ new Date(report.created_at).toLocaleDateString() }}</span>
-              <span class="card-reporter">Por: {{ report.user.username }}</span>
+              <span class="card-reporter">Por: <span style="color: var(--BgQuaternary);">{{ report.user.username }}</span></span>
             </div>
             <span class="card-title">{{ report.title }}</span>
             <p class="card-description">{{ report.description }}</p>
@@ -156,7 +156,7 @@ const createIntersectionObserver = () => {
             </div>
           </div>
           <div class="card-action">
-            <a style="color: #0f445b;" @click="showModal(report)">Ver Detalles</a>
+            <a style="color: var(--BgSecondary);" @click="showModal(report)">Ver Detalles</a>
           </div>
         </div>
       </div>
@@ -197,7 +197,7 @@ main {
         position: absolute;
         top: 20px;
         right: 20px;
-        background-color: #0f445b;
+        background-color: var(--BgTertiary);
         color: #fff;
         padding: 5px 10px;
         border-radius: 2px;

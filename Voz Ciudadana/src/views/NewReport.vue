@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 // Componentes
 import Header from "@/components/Header.vue";
 import ReportIcon from "@/components/ReportIcon.vue";
+import Footer from "@/components/Footer.vue";
 
 // Variables
 const MIN_LENGTH = 3;
@@ -246,8 +247,9 @@ async function saveReport() {
                         <option value="" disabled selected>Elige una categoría</option>
                         <option class="report-category-option" v-for="(category, index) in reportCategories"
                             :key="category.id" :value="category.id">
-                            <div class="option-content">
-                                <ReportIcon :iconValue="category.icon_name" :iconSize="15" :iconColor="'#26a69a'" />
+                            <div class="option-content" style="color: var(--BgQuaternary);">
+                                <ReportIcon :iconValue="category.icon_name" :iconSize="15"
+                                    :iconColor="'var(--BgQuaternary)'" />
                                 {{ capitalize(category.category_name) }}
                             </div>
                         </option>
@@ -266,10 +268,12 @@ async function saveReport() {
                     </GoogleMap>
                     <div class="button__container">
                         <button v-show="!locationConfirmed" @click="confirmLocation"
-                            class="confirm-position__button btn waves-effect waves-light blue-grey darken-2 pulse">Confirmar
+                            class="confirm-position__button btn waves-effect waves-light pulse"
+                            style="background-color: var(--BgSecondary);">Confirmar
                             Ubicación</button>
                         <button v-show="locationConfirmed" @click="editLocation"
-                            class="confirm-position__button btn waves-effect waves-light blue-grey darken-2">Editar
+                            class="confirm-position__button btn waves-effect waves-light"
+                            style="background-color: var(--BgSecondary);">Editar
                             Ubicación</button>
                     </div>
                 </div>
@@ -278,14 +282,15 @@ async function saveReport() {
                 <div class="multimedia__container" v-show="!isFormLoading">
                     <div class="shower__container" v-show="!showImageInput">
                         <label for="show-multimedia">¿Tienes fotografías para evidenciar la incidencia? (opcional)</label>
-                        <a class="waves-effect waves-light btn-small blue-grey" @click="showImageInputHandler"><i
-                                class="material-icons right">drive_folder_upload</i>Subir Evidencia</a>
+                        <a class="waves-effect waves-light btn-small" style="background-color: var(--BgTertiary);"
+                            @click="showImageInputHandler"><i class="material-icons right">drive_folder_upload</i>Subir
+                            Evidencia</a>
                     </div>
 
                     <div class="multimedia-form__container" v-show="showImageInput">
                         <div class="multimedia-input__container">
                             <div class="file-field input-field">
-                                <div class="btn">
+                                <div class="btn" style="background-color: var(--BgQuaternary);">
                                     <span>Evidencia</span>
                                     <input type="file" accept="image/*" multiple @change="handleFiles" ref="fileInput">
                                 </div>
@@ -301,14 +306,14 @@ async function saveReport() {
                         </div>
 
                         <div class="mutlimedia__buttons">
-                            <a @click="hideImageInputHandler"
-                                class="btn waves-effect waves-light red submit-images__button">Cancelar</a>
+                            <a @click="hideImageInputHandler" class="btn waves-effect waves-light submit-images__button"
+                                style="background-color: var(--red);">Cancelar</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="col s12 submit-report__button">
-                    <button type="submit" class="btn waves-effect waves-light blue"
+                    <button type="submit" class="btn waves-effect waves-light" style="background-color: var(--BgHigher1);"
                         :class="{ 'disabled': !isFormValid || isFormLoading }" @click="saveReport">Enviar Reporte <i
                             class="material-icons right">send</i></button>
                 </div>
@@ -318,6 +323,7 @@ async function saveReport() {
             </div>
         </div>
     </main>
+    <Footer />
 </template>
 
 

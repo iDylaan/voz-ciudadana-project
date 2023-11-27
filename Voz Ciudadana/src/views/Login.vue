@@ -23,7 +23,16 @@ const login = async () => {
   if (Object.keys(inputErrors).length > 0) {
     return;
   }
-  await store.dispatch('auth/login', loginReq);
+
+  try {
+    await store.dispatch('auth/login', loginReq);
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error.message
+    })
+  }
 };
 
 const handleInputs = () => {

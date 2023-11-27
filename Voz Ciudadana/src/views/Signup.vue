@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref, reactive, computed } from 'vue';
 import { useStore } from 'vuex';
+import Swal from 'sweetalert2';
 
 const store = useStore();
 const inputs = ['email', 'password', 'password_confirmation', 'username'];
@@ -19,7 +20,16 @@ const signup = async () => {
   if (Object.keys(inputErrors.value).length > 0) {
     return;
   }
-  await store.dispatch('auth/signup', signupReq);
+
+  try {
+    await store.dispatch('auth/signup', signupReq);
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: error.message
+    })
+  }
 }
 
 const handleInputs = () => {

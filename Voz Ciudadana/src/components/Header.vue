@@ -26,7 +26,7 @@ header {
     display: grid;
     height: 60px;
     place-content: center;
-    background-color: #082933;
+    background-color: var(--BgPrimary);
     z-index: 1000;
     
     .header__container {

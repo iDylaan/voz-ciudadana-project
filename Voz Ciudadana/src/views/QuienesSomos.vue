@@ -46,9 +46,9 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    height: 100vh;
+    min-height: 100vh;
     width: 90%;
-    margin: 0 auto;
+    margin: 20px auto;
 }
 
 @media (width < 350px) {

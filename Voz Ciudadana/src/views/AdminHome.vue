@@ -6,6 +6,7 @@ import { useStore } from "vuex";
 
 // Componentes
 import Header from '@/components/Header.vue';
+import Footer from '@/components/Footer.vue';
 
 // Variables
 const reports = ref([]);
@@ -169,6 +170,7 @@ const activateReport = async (report) => {
                 </table>
             </div>
         </main>
+        <Footer />
     </div>
 </template>
 
@@ -253,11 +255,11 @@ td {
 }
 
 .waves-light {
-    background-color: #0F445B;
+    background-color: var(--BgTertiary);
 }
 
 .cab {
-    background-color: #0F445B;
+    background-color: var(--BgTertiary);
 }
 
 h1 {
@@ -279,7 +281,7 @@ h3 {
 
 h1 {
     font-size: 2.5rem;
-    color: rgba(3, 26, 36, 0.788);
+    color: var(--BgPrimary);
 }
 
 .thead-content {
@@ -287,8 +289,8 @@ h1 {
 }
 
 .category-ticket {
-    background-color: #90c7d8;
-    color: #275e6d;
+    background-color: var(--BgHigher1);
+    color: white;
     padding: 7px;
     border-radius: 50px;
     font-size: 0.7rem;
@@ -312,5 +314,9 @@ h1 {
     gap: 10px;
     justify-content: center;
     align-items: center;
+}
+
+.btn {
+    background-color: var(--BgTertiary);
 }
 </style>

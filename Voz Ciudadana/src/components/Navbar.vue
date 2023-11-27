@@ -3,7 +3,9 @@ import { useStore } from 'vuex';
 import { useRouter, onBeforeRouteLeave } from 'vue-router';
 import { ref, onMounted, onBeforeUnmount, computed, reactive, watch } from 'vue';
 import { tokenExpired } from "@/utils/misc.js";
+// Componentes
 import ProfileThemeEditor from "@/components/ProfileThemeEditor.vue";
+import DaltonismSelect from '@/components/DaltonismSelect.vue';
 
 const router = useRouter();
 const store = useStore();
@@ -106,10 +108,12 @@ const logout = () => {
             <li><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/reports"><i
                         class="material-icons">reports</i>Reportes</router-link></li>
             <li><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/map-reports"><i
-                        class="material-icons">map</i>Mapa de
-                    reportes</router-link></li>
+                        class="material-icons">map</i>Mapa</router-link></li>
             <li v-if="authed"><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/"><i
                         class="material-icons">dashboard</i>Dashboard</router-link></li>
+            <li><router-link class="waves-effect sidenav-close" to="/quienes-somos"><i
+                        class="material-icons">groups</i>Quienes Somos</router-link></li>
+            <li>
             <li v-if="authed">
                 <div class="divider"></div>
             </li>
@@ -129,8 +133,11 @@ const logout = () => {
                         class="material-icons">manage_accounts</i>Editar Perfil</a></li>
             <li v-if="authed"><a class="waves-effect sidenav-close" @click="logout"><i
                         class="material-icons">logout</i>Cerrar Sesión</a></li>
-            <li><router-link class="waves-effect sidenav-close" to="/quienes-somos"><i
-                        class="material-icons">groups</i>Quienes Somos</router-link></li>
+            <div class="divider"></div>
+            </li>
+            <li>
+                <DaltonismSelect />
+            </li>
         </ul>
         <div class="background__button">
             <button class="menu__icon" @click="toggleMenu" :class="menuActive ? 'menu__active' : ''"

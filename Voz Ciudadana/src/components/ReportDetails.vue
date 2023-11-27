@@ -117,7 +117,7 @@ const toggleReportFixedVoted = () => {
                         </GoogleMap>
                     </div>
 
-                    <div class="options" v-show="!token">
+                    <div class="options" v-show="token">
                         <button class="btn tooltipped waves-effect" @click="toggleReportHelperVoted"
                             :style="{ backgroundColor: !reportHelperVoted ? 'white' : '#f77b72', color: !reportHelperVoted ? 'black' : 'white' }"
                             :class="{ 'waves-light': reportHelperVoted, 'waves-red': !reportHelperVoted }"
@@ -237,7 +237,7 @@ h2 {
 .card-category {
     top: 20px;
     right: 20px;
-    background-color: #0f445b;
+    background-color: var(--BgTertiary);
     color: #fff;
     padding: 5px 10px;
     border-radius: 2px;

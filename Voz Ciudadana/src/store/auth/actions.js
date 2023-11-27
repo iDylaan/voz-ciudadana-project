@@ -24,12 +24,7 @@ export async function login({ commit }, payload) {
         commit('cleanError');
         router.push("/");
     } catch (error) {
-        console.log(error);
-        if (error) {
-            commit('setError', error.response.data.message);
-        } else {
-            commit('setError', 'Error al iniciar sesión');
-        }
+        throw new Error(error);
     } finally {
         commit('toggleLoading');
     }
@@ -57,12 +52,7 @@ export async function signup({ commit }, user) {
         }
 
     } catch (error) {
-        console.log(error);
-        if (error) {
-            commit('setError', error.response.data.message);
-        } else {
-            commit('setError', 'Error al iniciar sesión');
-        }
+        throw new Error(error);
     } finally {
         commit('toggleLoading');
     }

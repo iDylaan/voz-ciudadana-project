@@ -1,0 +1,107 @@
+:root {
+    --BgDarken: #07252e;
+    --BgPrimary: #082933;
+    --BgSecondary: #093046;
+    --BgTertiary: #0f445b;
+    --BgQuaternary: #1f6d88;
+    --OnBgText: #feffff;
+    --BgHigher1: #35aece;
+    --BgHigher2: #4fc1e4;
+    --red: #f44336;
+}
+
+:root.protanopia {
+    --BgDarken: #13142b;
+    --BgPrimary: #161630;
+    --BgSecondary: #191a40;
+    --BgTertiary: #252655;
+    --BgQuaternary: #252655;
+    --OnBgText: #ffffff;
+    --BgHigher1: #696ac6;
+    --BgHigher2: #8081db;
+    --red: #a7a539;
+}
+
+:root.deuteranopia {
+    --BgDarken: #12102b;
+    --BgPrimary: #14112f;
+    --BgSecondary: #17143f;
+    --BgTertiary: #221e54;
+    --BgQuaternary: #3c367f;
+    --OnBgText: #ffffff;
+    --BgHigher1: #6259c4;
+    --BgHigher2: #7971d9;
+    --red: #b1be39;
+}
+
+:root.tritanopia {
+    --BgDarken: #082a29;
+    --BgPrimary: #092e2e;
+    --BgSecondary: #0a3c3b;
+    --BgTertiary: #115150;
+    --BgQuaternary: #227c7b;
+    --OnBgText: #fffeff;
+    --BgHigher1: #3bc0be;
+    --BgHigher2: #54d4d3;
+    --red: #eb3b3c;
+}
+
+:root.acromatopsia {
+    --BgDarken: #1d1d1d;
+    --BgPrimary: #202020;
+    --BgSecondary: #262626;
+    --BgTertiary: #363636;
+    --BgQuaternary: #585858;
+    --OnBgText: #ffffff;
+    --BgHigher1: #8d8d8d;
+    --BgHigher2: #a2a2a2;
+    --red: #767676;
+}
+
+:root.protanomalia {
+    --BgDarken: #0c1b2c;
+    --BgPrimary: #0e1e31;
+    --BgSecondary: #102343;
+    --BgTertiary: #183258;
+    --BgQuaternary: #183258;
+    --OnBgText: #feffff;
+    --BgHigher1: #4b85ca;
+    --BgHigher2: #639bdf;
+    --red: #d37d37;
+}
+
+:root.deuteranomalia {
+    --BgDarken: #0d1d2c;
+    --BgPrimary: #0e2031;
+    --BgSecondary: #102542;
+    --BgTertiary: #193657;
+    --BgQuaternary: #2e5884;
+    --OnBgText: #ffffff;
+    --BgHigher1: #4d8ec9;
+    --BgHigher2: #65a3df;
+    --red: #d07037;
+}
+
+:root.tritanomalia {
+    --BgDarken: #07272c;
+    --BgPrimary: #092b31;
+    --BgSecondary: #0a3541;
+    --BgTertiary: #104a56;
+    --BgQuaternary: #217483;
+    --OnBgText: #fefffe;
+    --BgHigher1: #38b6c8;
+    --BgHigher2: #52cadd;
+    --red: #ee3f38;
+}
+
+:root.acromatomalia {
+    --BgDarken: #132024;
+    --BgPrimary: #152428;
+    --BgSecondary: #192b34;
+    --BgTertiary: #243c47;
+    --BgQuaternary: #3e616e;
+    --OnBgText: #fffffe;
+    --BgHigher1: #659caa;
+    --BgHigher2: #7cb0c0;
+    --red: #af5f59;
+}

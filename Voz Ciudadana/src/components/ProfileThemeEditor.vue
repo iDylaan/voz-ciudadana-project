@@ -104,7 +104,7 @@ const updateProfileValues = async () => {
                     </div>
                 </div>
                 <div class="pics-buttons" id="#pic-next">
-                    <a class="waves-effect waves-light btn blue darken-3" :class="{ 'disabled': profilePics.pic <= 0 }"
+                    <a class="waves-effect waves-light btn" style="background-color: var(--BgQuaternary);" :class="{ 'disabled': profilePics.pic <= 0 }"
                         @click="setBannerStep" href="#main-top">Continuar</a>
                 </div>
             </div>
@@ -133,7 +133,7 @@ const updateProfileValues = async () => {
                 <div class="pics-buttons" id="#pic-next">
                     <a class="waves-effect waves-light btn-flat grey darken-1" style="color: white;"
                         @click="setPicStep">Regresar</a>
-                    <a class="waves-effect waves-light btn light-green" @click="updateProfileValues"
+                    <a class="waves-effect waves-light btn" style="background-color: var(--BgQuaternary);" @click="updateProfileValues"
                         :class="{ 'disabled': profilePics.banner <= 0 }">Terminar</a>
                 </div>
                 <div class="progress" v-show="isLoading">
@@ -250,10 +250,10 @@ const updateProfileValues = async () => {
                     }
 
                     &.banner-selected {
-                        box-shadow: 0 0 0 3px #0f445b;
+                        box-shadow: 0 0 0 3px var(--BgTertiary);
 
                         &:hover {
-                            box-shadow: 0 0 0 3px #0f445b;
+                            box-shadow: 0 0 0 3px var(--BgTertiary);
                         }
                     }
 
@@ -289,8 +289,8 @@ const updateProfileValues = async () => {
                     }
 
                     &.pic-selected {
-                        box-shadow: 0 0 0 3px #0f445b;
-                        background-color: #1f6d88;
+                        box-shadow: 0 0 0 3px var(--BgTertiary);
+                        background-color: var(--BgHigher1);
 
                         img {
                             transition: transform 0.3s ease;
@@ -298,7 +298,7 @@ const updateProfileValues = async () => {
                         }
 
                         &:hover {
-                            box-shadow: 0 0 0 3px #0f445b;
+                            box-shadow: 0 0 0 3px var(--BgTertiary);
                         }
 
                     }

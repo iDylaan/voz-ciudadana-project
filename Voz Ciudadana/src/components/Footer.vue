@@ -49,7 +49,7 @@
 
 .pie-pagina {
     width: 100%;
-    background-color: #0a141d;
+    background-color: var(--BgPrimary);
 }
 
 .pie-pagina .grupo-1 {
@@ -93,7 +93,7 @@
     line-height: 45px;
     color: #fff;
     margin-right: 10px;
-    background-color: #0d2033;
+    background-color: var(--BgDarken);
     text-align: center;
     transition: all 300ms ease;
 }
@@ -103,7 +103,7 @@
 }
 
 .pie-pagina .grupo-2 {
-    background-color: #0a1a2a;
+    background-color: var(--BgDarken);
     padding: 15px 10px;
     text-align: center;
     color: #fff;
