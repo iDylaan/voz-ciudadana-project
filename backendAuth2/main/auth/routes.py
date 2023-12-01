@@ -16,6 +16,12 @@ def login():
       #Generamos un nuevo token y le pasamos al usuario como identidad de es token
       access_token = create_access_token(identity=usuario)
       #Devolvemos los valores y el token
+
+      if usuario.first_access == True:
+        usuario.first_access = False
+        db.session.add(usuario)
+        db.session.commit()
+
       data = {
           'email': usuario.email,
           'nombre': usuario.username,
