@@ -313,7 +313,7 @@ async function saveReport() {
                 </div>
 
                 <div class="col s12 submit-report__button">
-                    <button type="submit" class="btn waves-effect waves-light" style="background-color: var(--BgHigher1);"
+                    <button type="submit" class="btn-large waves-effect waves-light" style="background-color: var(--BgHigher1);"
                         :class="{ 'disabled': !isFormValid || isFormLoading }" @click="saveReport">Enviar Reporte <i
                             class="material-icons right">send</i></button>
                 </div>

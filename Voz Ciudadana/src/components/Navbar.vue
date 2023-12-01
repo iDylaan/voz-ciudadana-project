@@ -3,6 +3,7 @@ import { useStore } from 'vuex';
 import { useRouter, onBeforeRouteLeave } from 'vue-router';
 import { ref, onMounted, onBeforeUnmount, computed, reactive, watch } from 'vue';
 import { tokenExpired } from "@/utils/misc.js";
+import { jwtDecode } from 'jwt-decode';
 // Componentes
 import ProfileThemeEditor from "@/components/ProfileThemeEditor.vue";
 import DaltonismSelect from '@/components/DaltonismSelect.vue';
@@ -28,11 +29,13 @@ const closeSidenav = () => {
 };
 
 const userImageSrc = computed(() => {
-    return userData.profile_picture ? require(`@/assets/icon/profile-pictures/profilePic${userData.profile_picture}.svg`) : '';
+    const profilePicture = userData.profile_picture > 0 ? userData.profile_picture : 1;
+    return require(`@/assets/icon/profile-pictures/profilePic${profilePicture}.svg`);
 });
 
 const userBannerStyle = computed(() => {
-    return userData.profile_banner ? `url(${require(`@/assets/img/profile-banners/banner${userData.profile_banner}.svg`)})` : '';
+    const profileBanner = userData.profile_banner > 0 ? userData.profile_banner : 1;
+    return `url(${require(`@/assets/img/profile-banners/banner${profileBanner}.svg`)})`;
 });
 
 // Watcher para reaccionar a los cambios de ruta
@@ -60,6 +63,10 @@ onMounted(() => {
             menuActive.value = false;
         },
     });
+    
+    if (authed.value) {
+        isEditorVisible.value = localStorage.getItem("first_access") === "true"? true : false;
+    }
 });
 
 onBeforeUnmount(() => {
@@ -107,7 +114,7 @@ const logout = () => {
                         class="material-icons">home</i>Inicio</router-link></li>
             <li><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/reports"><i
                         class="material-icons">reports</i>Reportes</router-link></li>
-            <li><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/map-reports"><i
+            <li><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/mapa"><i
                         class="material-icons">map</i>Mapa</router-link></li>
             <li v-if="authed"><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/"><i
                         class="material-icons">dashboard</i>Dashboard</router-link></li>
@@ -120,7 +127,7 @@ const logout = () => {
             <li v-if="authed"><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/new-report"><i
                         class="material-icons">format_list_bulleted_add</i>Nuevo
                     reporte</router-link></li>
-            <li v-if="authed"><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/"><i
+            <li v-if="authed"><router-link @click="closeSidenav" class="waves-effect sidenav-close" to="/mis-reportes"><i
                         class="material-icons">list_alt</i>Mis
                     reportes</router-link></li>
             <li>

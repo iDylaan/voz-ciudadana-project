@@ -7,10 +7,23 @@ import Swal from 'sweetalert2';
 const store = useStore();
 const error = computed(() => store.state.auth.error);
 const loginReq = reactive({
-  email: '',
-  password: ''
+  email: {
+    value: '',
+    valid: false,
+    error: null,
+    touched: false
+  },
+  password: {
+    value: '',
+    valid: false,
+    error: null,
+    touched: false
+  }
 })
-const inputErrors = reactive({});
+const validInputs = computed(() => (
+  loginReq.email.valid &&
+  loginReq.password.valid
+));
 
 // Funciones
 onMounted(() => {
@@ -19,34 +32,56 @@ onMounted(() => {
 const isLoading = computed(() => store.state.auth.isFormLoading);
 
 const login = async () => {
-  handleInputs();
-  if (Object.keys(inputErrors).length > 0) {
+  if (!validInputs) {
     return;
   }
 
   try {
-    await store.dispatch('auth/login', loginReq);
+    await store.dispatch('auth/login', {
+      email: loginReq.email.value,
+      password: loginReq.password.value
+    });
   } catch (error) {
     Swal.fire({
       icon: 'error',
       title: 'Oops...',
-      text: error.message
+      text: error
     })
   }
 };
 
-const handleInputs = () => {
-  const emailRegex = new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$");
-  const passRegex = new RegExp("^.{8,}$");
-  if (loginReq.email === '') {
-    inputErrors.email = 'Campo obligatorio';
-  } else if (!emailRegex.test(loginReq.email)) {
-    inputErrors.email = 'Formato de email incorrecto';
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+const validateEmail = () => {
+  loginReq.email.touched = true;
+
+  if (loginReq.email.value === '') {
+    loginReq.email.valid = false;
+    loginReq.email.error = 'El correo electrónico es un campo obligatorio';
+    return;
   }
 
-  if (loginReq.password === '') {
-    inputErrors.password = 'Campo obligatorio';
+  if (!emailRegex.test(loginReq.email.value)) {
+    loginReq.email.valid = false;
+    loginReq.email.error = 'Formato de email incorrecto';
+    return;
   }
+
+  loginReq.email.valid = true;
+  loginReq.email.error = null;
+};
+
+const validatePassword = () => {
+  loginReq.password.touched = true;
+
+  if (loginReq.password.value === '') {
+    loginReq.password.valid = false;
+    loginReq.password.error = 'La contraseña es un campo obligatorio';
+    return;
+  }
+
+  loginReq.password.valid = true;
+  loginReq.password.error = null;
 };
 
 </script>
@@ -56,24 +91,27 @@ const handleInputs = () => {
   <main>
     <img src="../assets/img/Logo Voz Ciudadana.svg" alt="" width="120" height="120">
     <h1>Iniciar Sesion</h1>
-    <form @submit.prevent @submit="login" novalidate>
+    <form @submit.prevent novalidate @submit="login">
       <div class="input-field col s6">
         <i class="material-icons prefix">account_circle</i>
-        <input type="email" id="email" class="validate" name="" v-model="loginReq.email"
-          @input="store.commit('auth/cleanError');" :class="{ 'invalid': inputErrors.email }">
+        <input type="email" id="email" name="" v-model.trim="loginReq.email.value" @blur="validateEmail"
+          @input="store.commit('auth/cleanError');"
+          :class="{ 'invalid': loginReq.email.touched ? !loginReq.email.valid : false }">
         <label for="email">Correo electrónico</label>
-        <span class="helper-text" :data-error="inputErrors.email" v-show="inputErrors.email"></span>
+        <span class="helper-text" :data-error="loginReq.email.error" v-show="loginReq.email.error"></span>
       </div>
 
       <div class="input-field col s6">
         <i class="material-icons prefix">key</i>
-        <input type="password" name="" id="password" class="validate" :class="{ 'invalid': inputErrors.password }"
-          v-model="loginReq.password" @input="store.commit('auth/cleanError');">
+        <input type="password" name="" id="password" @change="validatePassword"
+          :class="{ 'invalid': loginReq.password.touched ? !loginReq.password.valid : false }"
+          v-model.trim="loginReq.password.value" @input="store.commit('auth/cleanError');">
         <label for="password">Contraseña</label>
-        <span v-show="inputErrors.password" class="helper-text" :data-error="inputErrors.password"></span>
+        <span v-show="loginReq.password.error" class="helper-text" :data-error="loginReq.password.error"></span>
       </div>
       <p v-if="error" class="error-message">{{ error }}</p>
-      <input type="submit" value="Iniciar Sesion">
+      <button type="submit" class="waves-effect waves-light btn-large" :class="{ 'disabled': !validInputs }">Iniciar
+        Sesión</button>
       <div class="progress" v-show="isLoading">
         <div class="indeterminate"></div>
       </div>
@@ -127,5 +165,10 @@ input[type="submit"] {
   color: white;
   background-color: rgb(253, 71, 71);
   border: 1px solid rgb(135, 0, 0);
+}
+
+.btn-large {
+  background-color: var(--BgSecondary);
+  color: white;
 }
 </style>

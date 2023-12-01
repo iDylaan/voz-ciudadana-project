@@ -180,6 +180,11 @@ main {
   padding: 2rem 0;
   background-color: #fcfcfc;
   width: 100%;
+  margin-top: 40px;
+
+  h1 {
+    font-size: 2.2rem;
+  }
 
   .card.report-card {
     position: relative;

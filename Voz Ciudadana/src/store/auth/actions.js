@@ -7,19 +7,27 @@ import { jwtDecode } from 'jwt-decode';
 export async function login({ commit }, payload) {
     commit('toggleLoading');
     try {
-        const response = await authApi.post('/auth/login', {
-            email: payload.email,
-            password: payload.password
-        });
-        const { data } = response;
-        const { access_token, nombre, email } = data;
+        const response = await fetch('https://voz-ciudadana-auth.fly.dev/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: payload.email,
+                password: payload.password
+            })
+        })
+        const result = await response.json();
+        if (!response.ok && response.status == 400) {
+            throw new Error(result.message);
+        }
+        const { access_token, nombre, email } = result;
         localStorage.setItem('token', access_token);
         const tokenDecoded = jwtDecode(access_token);
         tokenDecoded.sub.username = tokenDecoded.sub.nombre;
         localStorage.setItem('profile_picture', tokenDecoded.sub.profile_picture);
         localStorage.setItem('profile_banner', tokenDecoded.sub.profile_banner);
         localStorage.setItem('first_access', tokenDecoded.sub.first_access);
-        console.log(data.access_token);
         commit('setUser', tokenDecoded.sub);
         commit('cleanError');
         router.push("/");
@@ -42,7 +50,12 @@ export async function signup({ commit }, user) {
                 email: email
             }
 
-            localStorage.setItem('token', access_token)
+            localStorage.setItem('token', access_token);
+            const tokenDecoded = jwtDecode(access_token);
+            tokenDecoded.sub.username = tokenDecoded.sub.nombre;
+            localStorage.setItem('profile_picture', tokenDecoded.sub.profile_picture);
+            localStorage.setItem('profile_banner', tokenDecoded.sub.profile_banner);
+            localStorage.setItem('first_access', tokenDecoded.sub.first_access);
             commit('setUser', newUser);
             router.push({ path: '/' });
 

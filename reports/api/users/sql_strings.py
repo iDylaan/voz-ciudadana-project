@@ -5,3 +5,9 @@ class Sql_Strings():
         "WHERE id = %(id_user)s "
         "AND is_active = 1"
     )
+    
+    GET_EMAIL = (
+        "SELECT email "
+        "FROM users "
+        "WHERE email = %(email)s "
+    )

@@ -9,15 +9,6 @@ from api.config.conf_mysql import query, sql
 mod = Blueprint('users', __name__)
 # CORS acces to "users"
 CORS(mod)
-
-# CORS Configure Parameters
-@mod.route('/first_access_by_user_id', methods=['OPTIONS'])
-def handle_options():
-    return "", 200, {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization"
-    }
     
 @mod.route('/first_access_by_user_id/<int:id_user>', methods=['GET'])
 @jwt_required()
@@ -39,6 +30,34 @@ def get_first_access(id_user):
         }), 200
     except Exception as e:
         print("Ha ocurrido un error en @first_access_by_user_id/<int:id_user>: {} en la linea {}".format(e, e.__traceback__.tb_lineno))
+        try:
+            e = str(e)
+            return handle_error({'description': e[e.find(':')+2:], 'code': int(e[:3])}), int(e[:3])
+        except Exception as e:
+            return handle_error({'description': "Error inesperado en el servidor", 'code': 500}), 500
+        
+        
+@mod.route('/get_email_exists/<string:email>', methods=['GET'])
+def get_email_exists(email):
+    try:
+        if email is None:
+            return handle_error({'description': 'No se ha enviado el email a validar','code': 400}), 400
+        
+        result = query(SQL_STRINGS.GET_EMAIL, {'email': email}, True)
+        if result["status"] == "NOT_FOUND":
+            return jsonify({
+                'status': result["status"],
+                "message": "Correo electrónico disponible"
+            }), 200
+        elif result["status"] != "OK":
+            return handle_error({'description': 'No se pudo obtener la información del usuario','code': 500}), 500
+        
+        return jsonify({
+            'status': result["status"],
+            "message": "Correo electrónico no disponible"
+        }), 200
+    except Exception as e:
+        print("Ha ocurrido un error en @get_email_exists/<string:email>: {} en la linea {}".format(e, e.__traceback__.tb_lineno))
         try:
             e = str(e)
             return handle_error({'description': e[e.find(':')+2:], 'code': int(e[:3])}), int(e[:3])

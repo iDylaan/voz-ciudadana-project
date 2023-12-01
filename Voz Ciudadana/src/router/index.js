@@ -35,9 +35,19 @@ const publicRoutes = [
     component: () => import('../views/Reports.vue')
   },
   {
+    path: '/mis-reportes',
+    name: 'mis-reportes',
+    component: () => import('../views/MyReports.vue')
+  },
+  {
     path: '/quienes-somos',
     name: 'quienes-somos',
     component: () => import('../views/QuienesSomos.vue')
+  },
+  {
+    path: '/mapa',
+    name: 'mapa',
+    component: () => import('../views/MapReports.vue')
   },
 ]
 
@@ -101,7 +111,7 @@ router.beforeEach(async (to, from, next) => {
       next({ path: '/not-allowed', hash: '' });
       return;
     }
-    
+
     if (is_admin && to.path === '/') {
       next({ path: '/admin', hash: '' });
       return;

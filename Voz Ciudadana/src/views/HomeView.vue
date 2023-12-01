@@ -9,8 +9,6 @@ const token = localStorage.getItem('token') ? localStorage.getItem('token') : ''
 
 const authed = ref(!tokenExpired(token));
 
-const firstAccess = ref(false);
-
 onMounted(async () => {
   document.title = 'VC | Home';
 

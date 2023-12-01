@@ -38,20 +38,20 @@ export async function getReports({ commit }) {
  * 
  * @returns {void}
  */
-export async function getUserReports({ commit }, payload) {
+export async function getUserReports({ commit }, user_id) {
     commit('cleanUserReports'); // This function is used to clean the userReports array in the state.
 
     try {
-        const response = await reportApi.get(`/user_reports/${payload.user_id}`); // This line makes a GET request to the /user_reports/:user_id endpoint of the backend, where :user_id is the user ID passed in the payload.
+        const response = await privateReportApi.get(`/user_reports/${user_id}`); // This line makes a GET request to the /user_reports/:user_id endpoint of the backend, where :user_id is the user ID passed in the payload.
 
         if (response.status !== 200) {
             throw new Error(response.statusText); // If the response status is not 200 (OK), an error is thrown with the response status text.
         }
-
         const result = response.data; // The response data is assigned to the result variable.
 
-        if (result.status === "OK") {
-            commit('setReports', result.data); // If the status of the response data is "OK", the setReports function is called with the data from the response.
+        if (result.success) {
+            const reports = result.data? result.data : [];
+            commit('setReports', reports); // If the status of the response data is "OK", the setReports function is called with the data from the response.
         } else {
             throw new Error("Error inesperado al obtener los reportes, intenta nuevamente más tarde. 🙁"); // If the status is not "OK", an error is thrown with the specified message.
         }

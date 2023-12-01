@@ -39,7 +39,8 @@ def get_reports():
             result_report["description"] = report["report_description"]
             result_report["category"] = {
                 "id": report["category_id"],
-                "category_name": report["category_name"]
+                "category_name": report["category_name"],
+                "icon_name": report["icon_name"],
             }
             result_report["status"] = {
                 "id": report["status_id"],
@@ -76,7 +77,6 @@ def get_reports():
 @jwt_required()
 def get_user_reports(id_user):
     try:
-        print(id_user)
         result_user = query(SQL_STRINGS.GET_USER_BY_ID, {'id_user': id_user}, True)
         if result_user["status"] == "NOT_FOUND":
             return handle_error({'description': 'No se encontró el usuario con id {}'.format(id_user),'code': 404}), 404
@@ -98,7 +98,8 @@ def get_user_reports(id_user):
             result_report["description"] = report["report_description"]
             result_report["category"] = {
                 "id": report["category_id"],
-                "category_name": report["category_name"]
+                "category_name": report["category_name"],
+                "icon_name": report["icon_name"],
             }
             result_report["status"] = {
                 "id": report["status_id"],
